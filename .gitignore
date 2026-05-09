@@ -1,0 +1,34 @@
+# Dependencies — reinstallable, never commit these
+node_modules/
+dist/
+out/
+dist-electron/
+release/
+
+# Environment variables and secrets — NEVER commit
+.env
+.env.local
+.env.*.local
+*.credentials.json
+client_secret*.json
+
+# Build output
+out/
+build/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
