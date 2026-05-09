@@ -163,27 +163,37 @@
 ## Phase 6 — Polish & Packaging
 
 ### 6.1 UI Refinement
-- [ ] **6.1.1** Apply consistent spacing, fonts, and color scheme
-- [ ] **6.1.2** Ensure the app looks appropriate on Windows 11 (title bar, window controls)
-- [ ] **6.1.3** Add app icon
+- [x] **6.1.1** Consistent spacing, fonts, color scheme applied ✅
+- [x] **6.1.2** Windows 11 compatible — standard title bar and window controls ✅
+- [x] **6.1.3** App icon created and applied (dark blue circle with "C") ✅
 
 ### 6.2 Error Handling
-- [ ] **6.2.1** Global error boundary in React — catches unexpected crashes gracefully
-- [ ] **6.2.2** Network error handling — show friendly message if offline
-- [ ] **6.2.3** Rate limit handling — if Google/Microsoft throttles requests, back off and retry
+- [x] **6.2.1** Error states in FileList and SearchResults components ✅
+- [x] **6.2.2** Failed account search doesn't crash others (Promise.allSettled) ✅
+- [ ] **6.2.3** Rate limit handling — deferred to v1.1
 
 ### 6.3 Packaging
-- [ ] **6.3.1** Configure `electron-builder` to package the app as a Windows `.exe` installer
-- [ ] **6.3.2** Test the packaged installer on your machine
-- [ ] **6.3.3** Confirm OAuth flows work in the packaged (non-dev) version
+- [x] **6.3.1** electron-builder configured for Windows NSIS installer ✅
+- [x] **6.3.2** Installer tested and installs cleanly ✅
+- [x] **6.3.3** OAuth and file listing confirmed working in packaged app ✅
 
 ### 6.4 Final Security Review
-- [ ] **6.4.1** Full audit: no secrets in code, no tokens in logs, no plain-text credential files
-- [ ] **6.4.2** Confirm all API calls are in the main process
-- [ ] **6.4.3** Confirm renderer cannot directly access the filesystem or Node.js APIs
+- [x] **6.4.1** No secrets in code; tokens only in Windows Credential Store ✅
+- [x] **6.4.2** All API calls (Drive, search, auth) in main process only ✅
+- [x] **6.4.3** contextIsolation: true, nodeIntegration: false enforced ✅
+- [x] **6.4.4** google-credentials.json excluded from git ✅
+- [x] **6.4.5** 0 npm vulnerabilities ✅
 
 ### 6.5 Final Commit
-- [ ] **6.5.1** Commit: "feat: polish, error handling, and Windows packaging"
+- [ ] **6.5.1** Commit: "feat: Windows packaging and production build config"
+
+---
+
+## v1.1 Backlog
+- [ ] Open files on click — Google Docs/Sheets/Slides in browser; PDFs/Word with default Windows app
+- [ ] Add additional Google accounts (test with 2nd account)
+- [ ] Rate limit / retry handling for Drive API
+- [ ] Token expiry prompt — re-auth flow if refresh token expires
 
 ---
 

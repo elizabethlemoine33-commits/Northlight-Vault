@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron'
+import { BrowserWindow, app } from 'electron'
 import { google } from 'googleapis'
 import * as keytar from 'keytar'
 import * as fs from 'fs'
@@ -15,7 +15,12 @@ const SCOPES = [
 ]
 
 function loadCredentials(): { client_id: string; client_secret: string } {
-  const credPath = path.join(process.cwd(), 'resources', 'google-credentials.json')
+  // In production (packaged app), credentials live in the app's resources folder.
+  // In development, they live in the project's resources/ folder.
+  const credPath = app.isPackaged
+    ? path.join(process.resourcesPath, 'google-credentials.json')
+    : path.join(process.cwd(), 'resources', 'google-credentials.json')
+
   const raw = fs.readFileSync(credPath, 'utf-8')
   const parsed = JSON.parse(raw)
   const creds = parsed.installed || parsed.web
