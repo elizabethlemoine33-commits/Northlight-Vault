@@ -1,13 +1,14 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 
-// contextBridge.exposeInMainWorld() is how we safely expose backend
-// functions to the frontend. Only what's listed here can be called
-// from the React app — nothing else from Node.js or Electron is accessible.
-
-// For now this is empty — we'll add functions here in Phase 2 when
-// we wire up Google authentication.
+// Everything listed here is callable from the React frontend.
+// Nothing else from Node.js or Electron is accessible to the renderer.
 contextBridge.exposeInMainWorld('api', {
-  // Phase 2: auth functions will be added here
-  // Phase 4: file listing functions will be added here
-  // Phase 5: search functions will be added here
+  // Returns the list of connected Google accounts
+  getAccounts: () => ipcRenderer.invoke('accounts:get'),
+
+  // Opens Google sign-in browser window; returns the new account on success
+  connectAccount: () => ipcRenderer.invoke('accounts:connect'),
+
+  // Removes an account's tokens and clears it from the list
+  disconnectAccount: (accountId: string) => ipcRenderer.invoke('accounts:disconnect', accountId)
 })

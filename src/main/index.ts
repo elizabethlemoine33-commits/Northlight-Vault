@@ -1,5 +1,7 @@
-import { app, BrowserWindow, shell } from 'electron'
+import { app, BrowserWindow, shell, ipcMain } from 'electron'
 import { join } from 'path'
+import { signInWithGoogle, signOutGoogle } from './auth/google'
+import { getAccounts, addAccount, removeAccount } from './accounts'
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -41,6 +43,22 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 }
+
+// IPC handlers — these are the backend functions the frontend can call via the preload bridge
+// IPC stands for "Inter-Process Communication" — the message system between main and renderer
+
+ipcMain.handle('accounts:get', () => getAccounts())
+
+ipcMain.handle('accounts:connect', async () => {
+  const account = await signInWithGoogle()
+  addAccount(account)
+  return account
+})
+
+ipcMain.handle('accounts:disconnect', async (_event, accountId: string) => {
+  await signOutGoogle(accountId)
+  removeAccount(accountId)
+})
 
 app.whenReady().then(() => {
   createWindow()

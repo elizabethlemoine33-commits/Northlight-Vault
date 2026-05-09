@@ -11,6 +11,7 @@ release/
 .env.*.local
 *.credentials.json
 client_secret*.json
+resources/google-credentials.json
 
 # Build output
 out/

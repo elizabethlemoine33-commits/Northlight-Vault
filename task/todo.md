@@ -76,26 +76,26 @@
 ## Phase 2 — Google Drive Authentication
 
 ### 2.1 OAuth Flow
-- [ ] **2.1.1** Create `src/main/auth/google.ts` — handles the OAuth login flow
-- [ ] **2.1.2** Open a browser window for Google sign-in (using Electron's shell or BrowserWindow)
-- [ ] **2.1.3** Capture the authorization code from the redirect
-- [ ] **2.1.4** Exchange the code for an access token and refresh token
-- [ ] **2.1.5** Store tokens securely using `keytar` (never written to a file in plain text)
+- [x] **2.1.1** Created `src/main/auth/google.ts` ✅
+- [x] **2.1.2** Opens Electron BrowserWindow for Google sign-in ✅
+- [x] **2.1.3** Captures auth code via temporary local HTTP server ✅
+- [x] **2.1.4** Exchanges code for access + refresh tokens ✅
+- [x] **2.1.5** Tokens stored in Windows Credential Store via keytar ✅
 
 ### 2.2 Multi-Account Support
-- [ ] **2.2.1** Design account data model: `{ id, provider, email, displayName }`
-- [ ] **2.2.2** Store the list of connected accounts in `electron-store` (no tokens here — tokens stay in keytar)
-- [ ] **2.2.3** Support adding a second, third, fourth Google account without overwriting the first
-- [ ] **2.2.4** Support removing an account (revoke token and delete from keytar)
+- [x] **2.2.1** Account model: `{ id, provider, email, displayName }` ✅
+- [x] **2.2.2** Account list persisted in electron-store (no tokens) ✅
+- [x] **2.2.3** Multiple accounts supported — keyed by Google account ID ✅
+- [x] **2.2.4** Disconnect removes token from keytar and account from store ✅
 
 ### 2.3 UI — Google Account Tabs
-- [ ] **2.3.1** Create a sidebar or tab bar showing connected accounts
-- [ ] **2.3.2** Add "Connect Google Drive" button
-- [ ] **2.3.3** Each account shows email address and a Google icon
-- [ ] **2.3.4** Selecting a tab activates that account's file view (placeholder for now)
+- [x] **2.3.1** Sidebar shows connected accounts ✅
+- [x] **2.3.2** "Connect Google Drive" button ✅
+- [x] **2.3.3** Each account shows name, email, avatar initial ✅
+- [x] **2.3.4** Selecting tab activates account view (placeholder) ✅
 
 ### 2.4 Commit Checkpoint
-- [ ] **2.4.1** Security review: confirm tokens only in keytar, not in logs or files
+- [x] **2.4.1** Security review: tokens in keytar only, not logged or written to files ✅
 - [ ] **2.4.2** Commit: "feat: Google Drive multi-account OAuth"
 
 ---
