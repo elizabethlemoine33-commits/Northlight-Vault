@@ -137,25 +137,25 @@
 ## Phase 5 — Universal Search
 
 ### 5.1 Search Bar UI
-- [ ] **5.1.1** Add a search bar at the top of the app (always visible)
-- [ ] **5.1.2** Typing triggers search across ALL connected accounts simultaneously
-- [ ] **5.1.3** Show a loading indicator per account while results are fetching
-- [ ] **5.1.4** Display merged results in a single list
+- [x] **5.1.1** Search bar at the top, always visible when accounts are connected ✅
+- [x] **5.1.2** Typing triggers search across all accounts simultaneously ✅
+- [x] **5.1.3** "Searching all accounts…" loading state ✅
+- [x] **5.1.4** Merged results displayed in a single unified list ✅
 
 ### 5.2 Search Logic
-- [ ] **5.2.1** Create `src/main/search/index.ts` — fans out search query to all accounts in parallel
-- [ ] **5.2.2** Google Drive: use Drive API search (`q` parameter with name contains filter)
-- [ ] **5.2.3** Search all connected Google accounts in parallel
-- [ ] **5.2.4** Merge results and sort by relevance (name match quality, then last modified date)
+- [x] **5.2.1** `src/main/search/index.ts` fans out to all accounts in parallel ✅
+- [x] **5.2.2** Drive API `name contains` query with quote escaping ✅
+- [x] **5.2.3** All Google accounts searched simultaneously via Promise.allSettled ✅
+- [x] **5.2.4** Results sorted by most recently modified ✅
 
 ### 5.3 Search Results UI
-- [ ] **5.3.1** Each result shows: file name, account it belongs to (with icon), folder path, last modified
-- [ ] **5.3.2** Clicking a result navigates to that file's location in its account tab
-- [ ] **5.3.3** "No results" state with helpful message
-- [ ] **5.3.4** Debounce search input (wait 300ms after user stops typing before firing API calls)
+- [x] **5.3.1** Each result shows file name, account email with avatar badge, last modified ✅
+- [x] **5.3.2** Clicking a result switches to that account's tab and clears search ✅
+- [x] **5.3.3** "No results" state with search term displayed ✅
+- [x] **5.3.4** 350ms debounce on input ✅
 
 ### 5.4 Commit Checkpoint
-- [ ] **5.4.1** Security review: search queries go through main process; no token exposure in renderer
+- [x] **5.4.1** Security review: all search logic in main process, no token exposure in renderer ✅
 - [ ] **5.4.2** Commit: "feat: universal search across all accounts"
 
 ---

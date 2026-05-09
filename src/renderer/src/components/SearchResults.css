@@ -1,0 +1,99 @@
+.search-state {
+  padding: 48px;
+  text-align: center;
+  color: #888;
+  font-size: 14px;
+}
+
+.search-results {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.search-count {
+  padding: 10px 20px;
+  font-size: 12px;
+  color: #666;
+  border-bottom: 1px solid #e5e5e5;
+  background: #fff;
+  flex-shrink: 0;
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  display: block;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.results-table thead {
+  position: sticky;
+  top: 0;
+  background: #f8f8f8;
+  z-index: 1;
+}
+
+.results-table th {
+  text-align: left;
+  padding: 8px 16px;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 1px solid #e5e5e5;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.result-row {
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.result-row:hover { background: #f5f7ff; }
+
+.col-name {
+  padding: 9px 16px;
+  max-width: 380px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.col-account {
+  padding: 9px 16px;
+  white-space: nowrap;
+  color: #555;
+  width: 220px;
+}
+
+.col-date {
+  padding: 9px 16px;
+  color: #777;
+  white-space: nowrap;
+  width: 130px;
+}
+
+.file-icon {
+  margin-right: 8px;
+  font-size: 15px;
+}
+
+.account-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #89b4fa;
+  color: #1e1e2e;
+  font-size: 11px;
+  font-weight: 700;
+  margin-right: 6px;
+  vertical-align: middle;
+}

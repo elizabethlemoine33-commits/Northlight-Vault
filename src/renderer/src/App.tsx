@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import { FileList } from './components/FileList'
+import { SearchResults } from './components/SearchResults'
 
 interface GoogleAccount {
   id: string
@@ -9,7 +10,17 @@ interface GoogleAccount {
   provider: 'google'
 }
 
-// Tell TypeScript that window.api exists (it's injected by the preload script)
+interface SearchResult {
+  id: string
+  name: string
+  mimeType: string
+  modifiedTime: string | null
+  isFolder: boolean
+  accountId: string
+  accountEmail: string
+  accountName: string
+}
+
 declare global {
   interface Window {
     api: {
@@ -17,6 +28,7 @@ declare global {
       connectAccount: () => Promise<GoogleAccount>
       disconnectAccount: (accountId: string) => Promise<void>
       listFiles: (accountId: string, folderId: string) => Promise<unknown[]>
+      searchFiles: (query: string) => Promise<SearchResult[]>
     }
   }
 }
@@ -27,13 +39,51 @@ function App(): JSX.Element {
   const [connecting, setConnecting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Load saved accounts when the app starts
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([])
+  const [searchLoading, setSearchLoading] = useState(false)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const isSearching = searchQuery.trim().length > 0
+
   useEffect(() => {
     window.api.getAccounts().then((saved) => {
       setAccounts(saved)
       if (saved.length > 0) setActiveAccountId(saved[0].id)
     })
   }, [])
+
+  // Debounced search: wait 350ms after the user stops typing before firing
+  // This avoids hammering the API on every keystroke
+  function handleSearchInput(value: string) {
+    setSearchQuery(value)
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+
+    if (!value.trim()) {
+      setSearchResults([])
+      setSearchLoading(false)
+      return
+    }
+
+    setSearchLoading(true)
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const results = await window.api.searchFiles(value)
+        setSearchResults(results)
+      } catch {
+        setSearchResults([])
+      } finally {
+        setSearchLoading(false)
+      }
+    }, 350)
+  }
+
+  function handleSearchSelectAccount(accountId: string) {
+    setActiveAccountId(accountId)
+    setSearchQuery('')
+    setSearchResults([])
+  }
 
   async function handleConnect() {
     setConnecting(true)
@@ -73,8 +123,8 @@ function App(): JSX.Element {
           {accounts.map((account) => (
             <div
               key={account.id}
-              className={`account-tab ${account.id === activeAccountId ? 'active' : ''}`}
-              onClick={() => setActiveAccountId(account.id)}
+              className={`account-tab ${account.id === activeAccountId && !isSearching ? 'active' : ''}`}
+              onClick={() => { setSearchQuery(''); setActiveAccountId(account.id) }}
             >
               <div className="account-avatar">{account.displayName[0].toUpperCase()}</div>
               <div className="account-info">
@@ -100,17 +150,43 @@ function App(): JSX.Element {
       </header>
 
       <main className="content">
-        {activeAccount ? (
-          <FileList
-            accountId={activeAccount.id}
-            accountName={activeAccount.displayName}
-          />
-        ) : (
-          <div className="placeholder">
-            <h2>No accounts connected</h2>
-            <p>Click "Connect Google Drive" to get started.</p>
+        {/* Search bar — always visible at the top when accounts are connected */}
+        {accounts.length > 0 && (
+          <div className="search-bar-container">
+            <input
+              className="search-bar"
+              type="text"
+              placeholder="Search all accounts…"
+              value={searchQuery}
+              onChange={(e) => handleSearchInput(e.target.value)}
+            />
+            {searchQuery && (
+              <button className="search-clear" onClick={() => handleSearchInput('')}>×</button>
+            )}
           </div>
         )}
+
+        {/* Main panel: search results OR file browser */}
+        <div className="main-panel">
+          {isSearching ? (
+            <SearchResults
+              results={searchResults}
+              loading={searchLoading}
+              query={searchQuery}
+              onSelectAccount={handleSearchSelectAccount}
+            />
+          ) : activeAccount ? (
+            <FileList
+              accountId={activeAccount.id}
+              accountName={activeAccount.displayName}
+            />
+          ) : (
+            <div className="placeholder">
+              <h2>No accounts connected</h2>
+              <p>Click "Connect Google Drive" to get started.</p>
+            </div>
+          )}
+        </div>
       </main>
     </div>
   )

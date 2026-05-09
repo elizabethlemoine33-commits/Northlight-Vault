@@ -3,6 +3,7 @@ import { join } from 'path'
 import { signInWithGoogle, signOutGoogle } from './auth/google'
 import { getAccounts, addAccount, removeAccount } from './accounts'
 import { listFiles } from './drive/google'
+import { searchAllAccounts } from './search'
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -63,6 +64,13 @@ ipcMain.handle('accounts:disconnect', async (_event, accountId: string) => {
 
 ipcMain.handle('drive:listFiles', async (_event, accountId: string, folderId: string) => {
   return listFiles(accountId, folderId)
+})
+
+ipcMain.handle('search:query', async (_event, query: string) => {
+  console.log('[search] query:', query)
+  const results = await searchAllAccounts(query)
+  console.log('[search] results count:', results.length)
+  return results
 })
 
 app.whenReady().then(() => {

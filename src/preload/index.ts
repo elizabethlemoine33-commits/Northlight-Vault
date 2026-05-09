@@ -14,5 +14,8 @@ contextBridge.exposeInMainWorld('api', {
 
   // Lists files/folders inside a Drive folder ('root' = the account's Drive root)
   listFiles: (accountId: string, folderId: string) =>
-    ipcRenderer.invoke('drive:listFiles', accountId, folderId)
+    ipcRenderer.invoke('drive:listFiles', accountId, folderId),
+
+  // Searches all connected accounts simultaneously; returns merged results
+  searchFiles: (query: string) => ipcRenderer.invoke('search:query', query)
 })
