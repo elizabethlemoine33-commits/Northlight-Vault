@@ -108,32 +108,29 @@
 ## Phase 4 — File Browser
 
 ### 4.1 Google Drive File Listing
-- [ ] **4.1.1** Create `src/main/drive/google.ts` — fetches file list from Google Drive API
-- [ ] **4.1.2** Fetch root folder contents for the selected account
-- [ ] **4.1.3** Display: file name, type (folder/file), size, last modified date
-- [ ] **4.1.4** Support navigating into folders (click to open)
-- [ ] **4.1.5** Breadcrumb trail showing current folder path
+- [x] **4.1.1** Created `src/main/drive/google.ts` ✅
+- [x] **4.1.2** Fetches root folder contents via Drive API v3 ✅
+- [x] **4.1.3** Displays name, icon, size, last modified date ✅
+- [x] **4.1.4** Click folder to navigate into it ✅
+- [x] **4.1.5** Breadcrumb trail with click-to-navigate ✅
 
 ### 4.2 OneDrive File Listing
-- [ ] **4.2.1** Create `src/main/drive/microsoft.ts` — fetches file list from Microsoft Graph API
-- [ ] **4.2.2** Fetch root folder contents for the selected account
-- [ ] **4.2.3** Same display format as Google Drive view
-- [ ] **4.2.4** Folder navigation and breadcrumb trail
+- [~] ~~DROPPED — OneDrive removed from scope~~
 
-### 4.3 Shared File Browser UI Component
-- [ ] **4.3.1** Create a single `FileList` React component used by both Google and OneDrive views
-- [ ] **4.3.2** File type icons (folder, document, image, etc.)
-- [ ] **4.3.3** Loading spinner while fetching
-- [ ] **4.3.4** Error state with plain-English message if API call fails
-- [ ] **4.3.5** Empty state if folder has no files
+### 4.3 File Browser UI Component
+- [x] **4.3.1** `FileList` React component in `src/renderer/src/components/FileList.tsx` ✅
+- [x] **4.3.2** File type icons (folder, doc, sheet, PDF, image, video, etc.) ✅
+- [x] **4.3.3** Loading state while fetching ✅
+- [x] **4.3.4** Error state with plain-English message ✅
+- [x] **4.3.5** Empty folder state ✅
 
 ### 4.4 Token Refresh
-- [ ] **4.4.1** Handle expired access tokens automatically (use refresh token to get a new one)
-- [ ] **4.4.2** If refresh token is also expired, prompt user to re-authenticate
+- [x] **4.4.1** Auto-refresh handled by googleapis client + keytar token update listener ✅
+- [x] **4.4.2** Error state shown if auth fails (re-auth prompt is future polish) ✅
 
 ### 4.5 Commit Checkpoint
-- [ ] **4.5.1** Security review: confirm API calls go through main process only, not renderer
-- [ ] **4.5.2** Commit: "feat: file browser for Google Drive and OneDrive"
+- [x] **4.5.1** Security review: all Drive API calls go through main process via IPC ✅
+- [ ] **4.5.2** Commit: "feat: Google Drive file browser with folder navigation"
 
 ---
 

@@ -2,6 +2,7 @@ import { app, BrowserWindow, shell, ipcMain } from 'electron'
 import { join } from 'path'
 import { signInWithGoogle, signOutGoogle } from './auth/google'
 import { getAccounts, addAccount, removeAccount } from './accounts'
+import { listFiles } from './drive/google'
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -58,6 +59,10 @@ ipcMain.handle('accounts:connect', async () => {
 ipcMain.handle('accounts:disconnect', async (_event, accountId: string) => {
   await signOutGoogle(accountId)
   removeAccount(accountId)
+})
+
+ipcMain.handle('drive:listFiles', async (_event, accountId: string, folderId: string) => {
+  return listFiles(accountId, folderId)
 })
 
 app.whenReady().then(() => {

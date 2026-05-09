@@ -10,5 +10,9 @@ contextBridge.exposeInMainWorld('api', {
   connectAccount: () => ipcRenderer.invoke('accounts:connect'),
 
   // Removes an account's tokens and clears it from the list
-  disconnectAccount: (accountId: string) => ipcRenderer.invoke('accounts:disconnect', accountId)
+  disconnectAccount: (accountId: string) => ipcRenderer.invoke('accounts:disconnect', accountId),
+
+  // Lists files/folders inside a Drive folder ('root' = the account's Drive root)
+  listFiles: (accountId: string, folderId: string) =>
+    ipcRenderer.invoke('drive:listFiles', accountId, folderId)
 })

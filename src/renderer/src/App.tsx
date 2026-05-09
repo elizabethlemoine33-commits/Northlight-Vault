@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
+import { FileList } from './components/FileList'
 
 interface GoogleAccount {
   id: string
@@ -15,6 +16,7 @@ declare global {
       getAccounts: () => Promise<GoogleAccount[]>
       connectAccount: () => Promise<GoogleAccount>
       disconnectAccount: (accountId: string) => Promise<void>
+      listFiles: (accountId: string, folderId: string) => Promise<unknown[]>
     }
   }
 }
@@ -99,11 +101,10 @@ function App(): JSX.Element {
 
       <main className="content">
         {activeAccount ? (
-          <div className="placeholder">
-            <h2>{activeAccount.displayName}</h2>
-            <p>{activeAccount.email}</p>
-            <p className="hint">File browser coming in Phase 4.</p>
-          </div>
+          <FileList
+            accountId={activeAccount.id}
+            accountName={activeAccount.displayName}
+          />
         ) : (
           <div className="placeholder">
             <h2>No accounts connected</h2>
