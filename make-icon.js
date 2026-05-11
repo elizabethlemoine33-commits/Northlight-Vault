@@ -63,74 +63,61 @@ function distToSegment(px, py, x1, y1, x2, y2) {
 // ── Pixel rendering ───────────────────────────────────────────────────────────
 
 function createPixels() {
-  const buf = new Uint8Array(W * H * 4)  // RGBA
-  const BG   = hex('#08080f')
-  const FILL1 = hex('#1a1430')
-  const FILL2 = hex('#0d1820')
+  const buf  = new Uint8Array(W * H * 4)
+  const BG   = hex('#08080f')   // dark background — document pops against this
+  const DARK = hex('#0c0a18')   // dark colour for lines on the gradient fill
 
   for (let y = 0; y < H; y++) {
     for (let x = 0; x < W; x++) {
       const i = (y*W+x)*4
-      let [r,g,b] = BG
       let a = 255
 
-      // ── Document body ──────────────────────────────────────────────────
+      // ── Background: dark midnight ──────────────────────────────────────
+      let [r,g,b] = BG
+
+      // ── Document body: aurora gradient fill ────────────────────────────
       if (inDocument(x, y)) {
-        const t = (x-DOC_L)/(DOC_R-DOC_L)
-        ;[r,g,b] = lerp(FILL1, FILL2, t)
+        const dt = (x - DOC_L) / (DOC_R - DOC_L)   // 0=left(teal) → 1=right(pink)
+        ;[r,g,b] = aurora(dt)
       }
 
-      // ── Document border (aurora gradient stroke) ───────────────────────
-      const strokeW = 2.5
-      // Left edge
-      if (x >= DOC_L-strokeW && x <= DOC_L+strokeW && y >= DOC_T && y <= DOC_B) {
-        const t = (y-DOC_T)/(DOC_B-DOC_T)
-        ;[r,g,b] = blend([r,g,b], aurora(0.6-t*0.3), 0.9)
-      }
-      // Right edge
-      if (x >= DOC_R-strokeW && x <= DOC_R+strokeW && y >= FOLD_Y && y <= DOC_B) {
-        const t = (y-FOLD_Y)/(DOC_B-FOLD_Y)
-        ;[r,g,b] = blend([r,g,b], aurora(0.1+t*0.3), 0.9)
-      }
-      // Bottom edge
-      if (y >= DOC_B-strokeW && y <= DOC_B+strokeW && x >= DOC_L && x <= DOC_R) {
-        const t = (x-DOC_L)/(DOC_R-DOC_L)
-        ;[r,g,b] = blend([r,g,b], aurora(t*0.5), 0.9)
-      }
-      // Top edge (left portion, before fold)
-      if (y >= DOC_T-strokeW && y <= DOC_T+strokeW && x >= DOC_L && x <= FOLD_X) {
-        const t = (x-DOC_L)/(FOLD_X-DOC_L)
-        ;[r,g,b] = blend([r,g,b], aurora(0.5+t*0.2), 0.9)
+      // ── Document border: dark (sits on top of bright gradient fill) ────
+      const strokeW = 5
+      const onLeft   = x >= DOC_L-strokeW && x <= DOC_L+strokeW && y >= DOC_T && y <= DOC_B
+      const onRight  = x >= DOC_R-strokeW && x <= DOC_R+strokeW && y >= FOLD_Y && y <= DOC_B
+      const onBottom = y >= DOC_B-strokeW && y <= DOC_B+strokeW && x >= DOC_L && x <= DOC_R
+      const onTop    = y >= DOC_T-strokeW && y <= DOC_T+strokeW && x >= DOC_L && x <= FOLD_X
+
+      if (onLeft || onRight || onBottom || onTop) {
+        ;[r,g,b] = blend([r,g,b], DARK, 0.85)
       }
 
-      // ── Fold diagonal stroke ───────────────────────────────────────────
+      // ── Fold diagonal: dark ────────────────────────────────────────────
       const foldDist = distToSegment(x, y, FOLD_X, DOC_T, DOC_R, FOLD_Y)
       if (foldDist <= strokeW) {
-        ;[r,g,b] = blend([r,g,b], aurora(0.9), 0.9)
+        ;[r,g,b] = blend([r,g,b], DARK, 0.80)
       }
 
-      // ── Document text lines ────────────────────────────────────────────
+      // ── Document text lines: dark, visible on bright gradient fill ─────
       const lineL = DOC_L + 18
       const lines = [
-        { y: 158, r: DOC_R-18, alpha: 0.55, t: 0.2 },
-        { y: 178, r: DOC_R-36, alpha: 0.40, t: 0.3 },
-        { y: 198, r: DOC_R-60, alpha: 0.25, t: 0.4 },
+        { y: 158, r: DOC_R-18, alpha: 0.55 },
+        { y: 178, r: DOC_R-36, alpha: 0.40 },
+        { y: 198, r: DOC_R-60, alpha: 0.28 },
       ]
       for (const line of lines) {
-        if (Math.abs(y - line.y) <= 2 && x >= lineL && x <= line.r) {
-          const tx = (x-lineL)/(line.r-lineL)
-          ;[r,g,b] = blend([r,g,b], aurora(line.t + tx*0.2), line.alpha)
+        if (Math.abs(y - line.y) <= 4 && x >= lineL && x <= line.r) {
+          ;[r,g,b] = blend([r,g,b], DARK, line.alpha)
         }
       }
 
-      // ── Aurora rays ────────────────────────────────────────────────────
-      // Each ray: { cx, topY, botY, halfW, colorT, opacity }
+      // ── Aurora rays: aurora-coloured above the dark background ─────────
       const rays = [
-        { cx:128, topY:10, botY:78, hw:4.0, t:0.55, op:1.00 },
-        { cx:108, topY:18, botY:68, hw:2.5, t:0.72, op:0.75 },
-        { cx:148, topY:18, botY:68, hw:2.5, t:0.38, op:0.75 },
-        { cx: 86, topY:30, botY:60, hw:1.5, t:0.85, op:0.40 },
-        { cx:170, topY:30, botY:60, hw:1.5, t:0.20, op:0.40 },
+        { cx:128, topY: 6, botY:78, hw: 9, t:0.55, op:1.00 },
+        { cx:108, topY:14, botY:68, hw: 6, t:0.72, op:0.90 },
+        { cx:148, topY:14, botY:68, hw: 6, t:0.38, op:0.90 },
+        { cx: 86, topY:26, botY:60, hw: 4, t:0.85, op:0.65 },
+        { cx:170, topY:26, botY:60, hw: 4, t:0.20, op:0.65 },
       ]
       for (const ray of rays) {
         if (y >= ray.topY && y <= ray.botY) {
@@ -138,7 +125,7 @@ function createPixels() {
           if (dx <= ray.hw + 1) {
             const vy = (y-ray.topY)/(ray.botY-ray.topY)
             const edgeAlpha = Math.max(0, 1-(dx/ray.hw))
-            const fadeAlpha = ray.op * (1 - vy*0.85) * edgeAlpha
+            const fadeAlpha = ray.op * (1 - vy*0.80) * edgeAlpha
             if (fadeAlpha > 0.01) {
               ;[r,g,b] = blend([r,g,b], aurora(ray.t), fadeAlpha)
             }
