@@ -23,7 +23,7 @@ function createWindow(): void {
       // Security: disable ability to run local files
       webSecurity: true
     },
-    title: 'Cloud File Browser',
+    title: 'Northlight Vault',
     show: false
   })
 

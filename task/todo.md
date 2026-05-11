@@ -316,13 +316,112 @@
 
 ---
 
-## Phase 9 — UI Updates (Stretch Goal — DO NOT START)
+## Phase 9 — Northlight Vault Brand Refresh (Priority 3)
 
-**Status:** Acknowledged. Will not be started until Elizabeth explicitly says "begin Priority 3."
+**Goal:** Rename the app "Northlight Vault" and apply Elizabeth's Northlight brand identity — dark Aurora palette, Jost/Outfit fonts, gradient accent bar, and the document-with-aurora-rays icon.
 
-- [ ] **9.1** Update interface color scheme
-- [ ] **9.2** Update app logo/icon
-- [ ] **9.3** Any other visual polish
+**Plain-English explanation:** Right now the app looks like a generic dark UI. We're going to give it a personality that matches Elizabeth's consulting brand. The biggest changes are: new name everywhere, new color scheme (deep midnight black + aurora gradient accents), new fonts, and a proper icon. Nothing about how the app *works* changes — only how it looks.
+
+**Brand reference files:**
+- Colors, fonts, gradients: `C:\Users\erand\Downloads\northlight_brand_v8.html`
+- Icon SVG: `C:\Users\erand\Downloads\northlight_vault_icon_v2.html`
+
+**Aurora palette:**
+- Midnight (background): `#0E0E14`
+- Birch (primary text): `#F0ECE4`
+- Glacial (accent): `#4FC3C8`
+- Boreal (mid): `#5B8DD9`
+- Dusk (mid): `#8B6FD4`
+- Aurora (accent): `#C46FAA`
+- Gradient bar: `linear-gradient(90deg, #4fc3c8 0%, #5b8dd9 30%, #8b6fd4 65%, #c46faa 100%)`
+
+**Fonts:** Jost (headings, labels, UI chrome) + Outfit (body text, metadata) — loaded from Google Fonts via HTML `<link>`
+
+---
+
+### 9.1 App rename
+- [ ] **9.1.1** In `package.json` — change `name` to `northlight-vault` and `productName` to `Northlight Vault`
+- [ ] **9.1.2** In `src/main/index.ts` — change `BrowserWindow` title to `"Northlight Vault"`
+- [ ] **9.1.3** In `src/renderer/index.html` — change `<title>` to `"Northlight Vault"`
+- [ ] **9.1.4** In `CLAUDE.md` — update "What This Project Is" section to reflect new name
+
+### 9.2 Fonts
+- [ ] **9.2.1** In `src/renderer/index.html` — add Google Fonts `<link>` for Jost (300,400,500,600,700) and Outfit (300,400,500,600)
+- [ ] **9.2.2** In `src/renderer/src/index.css` — set `body { font-family: 'Outfit', sans-serif; }` as default
+
+### 9.3 CSS variables / design tokens
+- [ ] **9.3.1** In `src/renderer/src/index.css` — define CSS custom properties for the full palette:
+  ```css
+  :root {
+    --midnight: #0E0E14;
+    --birch: #F0ECE4;
+    --glacial: #4FC3C8;
+    --boreal: #5B8DD9;
+    --dusk: #8B6FD4;
+    --aurora: #C46FAA;
+    --surface: #12121e;
+    --border: #2a2a48;
+    --muted: #5a6080;
+    --gradient-bar: linear-gradient(90deg, #4fc3c8 0%, #5b8dd9 30%, #8b6fd4 65%, #c46faa 100%);
+    --gradient-text: linear-gradient(105deg, #4fc3c8 0%, #5b8dd9 33%, #8b6fd4 66%, #c46faa 100%);
+  }
+  ```
+- [ ] **9.3.2** Update `body` background to `var(--midnight)` and text color to `var(--birch)`
+
+### 9.4 Sidebar redesign (App.css + App.tsx)
+- [ ] **9.4.1** In `App.css` — update `.sidebar` background to `#08080f` (deeper than main bg), right border `1px solid #1e2035`
+- [ ] **9.4.2** In `App.css` — add 3px gradient accent bar at top of sidebar:
+  ```css
+  .sidebar::before {
+    content: '';
+    display: block;
+    height: 3px;
+    background: var(--gradient-bar);
+  }
+  ```
+- [ ] **9.4.3** In `App.tsx` — change sidebar heading from "Cloud File Browser" to "Northlight Vault"
+- [ ] **9.4.4** In `App.css` — style `.sidebar-title` with Jost font, gradient text fill (like the brand wordmark), smaller/tighter version
+- [ ] **9.4.5** In `App.tsx` — add subtitle text "Cloud File Browser" below the main title in a smaller, muted style
+- [ ] **9.4.6** In `App.css` — update account tab cards to use `--surface` background with `--border` outline; selected state uses a subtle gradient left-border accent
+
+### 9.5 Button styling
+- [ ] **9.5.1** In `App.css` — update `.connect-btn` (Connect Google Drive) to use gradient background (`var(--gradient-bar)`) with white text
+- [ ] **9.5.2** In `App.css` — update `.connect-btn-onedrive` to use same gradient (not a distinct blue — brand consistency)
+- [ ] **9.5.3** In `FileList.css` / `SearchResults.css` — update `.open-btn` to use `--dusk` or gradient border with gradient text, dark background (ghost style)
+
+### 9.6 Provider badges
+- [ ] **9.6.1** In `App.css` — update `.badge-google` to use `--glacial` color family
+- [ ] **9.6.2** In `App.css` — update `.badge-onedrive` to use `--boreal` color family
+- [ ] **9.6.3** In `App.css` — update avatar initials background to use `--dusk` for Google, `--boreal` for OneDrive
+
+### 9.7 Main content area
+- [ ] **9.7.1** In `App.css` — update `.main-content` background to `var(--midnight)`
+- [ ] **9.7.2** In `App.css` — update search bar to use `--surface` background, `--border` border, `--birch` text, `--glacial` focus ring
+- [ ] **9.7.3** In `FileList.css` — update table header, row hover, and border colors to match brand
+- [ ] **9.7.4** In `SearchResults.css` — update result rows, hover state, and badge styling
+
+### 9.8 App icon
+- [ ] **9.8.1** Extract the SVG path data from `northlight_vault_icon_v2.html` (the 96×110 viewBox document with aurora rays)
+- [ ] **9.8.2** Create a 256×256 PNG icon file at `resources/icon.png` — can be done by saving a small HTML file that renders the icon and screenshotting, or by using a Node script
+- [ ] **9.8.3** In `electron.vite.config.ts` and `package.json` (electron-builder config) — point to the new `resources/icon.png`
+- [ ] **9.8.4** In `src/main/index.ts` — set `BrowserWindow` `icon` property to the new icon path
+
+### 9.9 Security review
+- [ ] **9.9.1** Confirm no logic changes — only CSS, HTML, and config (no IPC, no auth, no API calls modified)
+- [ ] **9.9.2** Confirm Google Fonts load via `<link>` in renderer HTML (CSP-safe — fonts.googleapis.com and fonts.gstatic.com are already trusted origins or need to be added)
+- [ ] **9.9.3** TypeScript typecheck — 0 errors
+
+### 9.10 Visual verification
+- [ ] **9.10.1** Run `npm run dev` and confirm the app title bar reads "Northlight Vault"
+- [ ] **9.10.2** Confirm sidebar gradient bar renders at top
+- [ ] **9.10.3** Confirm "Northlight Vault" heading uses gradient text
+- [ ] **9.10.4** Confirm fonts loaded (Jost for headings, Outfit for body)
+- [ ] **9.10.5** Confirm Connect buttons use gradient
+- [ ] **9.10.6** Confirm file list, search, and open button are all readable on the dark background
+- [ ] **9.10.7** Connect a Google account, browse files, search — confirm nothing broken
+
+### 9.11 Commit checkpoint
+- [ ] **9.11.1** Commit: "feat: Northlight Vault brand refresh — rename, Aurora palette, Jost/Outfit fonts, gradient accents"
 
 ---
 

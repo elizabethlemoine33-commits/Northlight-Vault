@@ -1,7 +1,7 @@
 {
-  "name": "cloud-file-browser",
+  "name": "northlight-vault",
   "version": "0.1.0",
-  "description": "Multi-account Google Drive browser for Windows",
+  "description": "Northlight Vault — multi-account cloud file browser for Windows",
   "main": "out/main/index.js",
   "scripts": {
     "dev": "electron-vite dev",
@@ -31,8 +31,8 @@
     "react-dom": "^18.3.0"
   },
   "build": {
-    "appId": "com.elizabethlemoine.cloudfilebrowser",
-    "productName": "Cloud File Browser",
+    "appId": "com.elizabethlemoine.northlightvault",
+    "productName": "Northlight Vault",
     "directories": {
       "output": "release"
     },

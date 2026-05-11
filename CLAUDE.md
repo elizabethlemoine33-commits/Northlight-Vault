@@ -1,4 +1,4 @@
-# Cloud File Browser — Project Memory
+# Northlight Vault — Project Memory
 
 Re-read this file at the start of every session before doing anything else.
 
@@ -6,8 +6,8 @@ Re-read this file at the start of every session before doing anything else.
 
 ## What This Project Is
 
-A Windows desktop application that lets Elizabeth Lemoine browse multiple
-Google Drive accounts simultaneously without logging in and out.
+**Northlight Vault** — a Windows desktop application that lets Elizabeth Lemoine browse multiple
+Google Drive and OneDrive accounts simultaneously without logging in and out.
 
 - **Read-only for v1** — no upload, edit, or delete
 - **Google Drive only** — OneDrive was dropped (Azure account setup too complex)

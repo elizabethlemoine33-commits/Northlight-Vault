@@ -142,7 +142,12 @@ function App(): JSX.Element {
   return (
     <div className="app">
       <header className="sidebar">
-        <div className="sidebar-title">Cloud File Browser</div>
+        <div className="sidebar-gradient-bar" />
+        <div className="sidebar-inner">
+        <div className="sidebar-brand">
+          <div className="sidebar-title">Northlight Vault</div>
+          <div className="sidebar-subtitle">Cloud File Browser</div>
+        </div>
 
         <div className="account-list">
           {accounts.map((account) => (
@@ -184,6 +189,7 @@ function App(): JSX.Element {
         </div>
 
         {error && <div className="error-message">{error}</div>}
+        </div>
       </header>
 
       <main className="content">

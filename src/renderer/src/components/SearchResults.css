@@ -1,7 +1,8 @@
 .search-state {
   padding: 48px;
   text-align: center;
-  color: #888;
+  font-family: 'Outfit', sans-serif;
+  color: var(--muted);
   font-size: 14px;
 }
 
@@ -14,10 +15,11 @@
 
 .search-count {
   padding: 10px 20px;
+  font-family: 'Outfit', sans-serif;
   font-size: 12px;
-  color: #666;
-  border-bottom: 1px solid #e5e5e5;
-  background: #fff;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
   flex-shrink: 0;
 }
 
@@ -33,28 +35,29 @@
 .results-table thead {
   position: sticky;
   top: 0;
-  background: #f8f8f8;
+  background: var(--surface);
   z-index: 1;
 }
 
 .results-table th {
   text-align: left;
   padding: 8px 16px;
+  font-family: 'Jost', sans-serif;
   font-weight: 600;
-  color: #555;
-  border-bottom: 1px solid #e5e5e5;
-  font-size: 12px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
 }
 
 .result-row {
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid rgba(30,32,53,0.8);
   cursor: pointer;
   transition: background 0.1s;
 }
 
-.result-row:hover { background: #f5f7ff; }
+.result-row:hover { background: rgba(91,141,217,0.05); }
 
 .col-name {
   padding: 9px 16px;
@@ -62,20 +65,26 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-family: 'Outfit', sans-serif;
+  color: var(--birch);
 }
 
 .col-account {
   padding: 9px 16px;
   white-space: nowrap;
-  color: #555;
+  font-family: 'Outfit', sans-serif;
+  color: var(--text-secondary);
+  font-size: 12px;
   width: 220px;
 }
 
 .col-date {
   padding: 9px 16px;
-  color: #777;
+  font-family: 'Outfit', sans-serif;
+  color: var(--muted);
   white-space: nowrap;
   width: 130px;
+  font-size: 12px;
 }
 
 .file-icon {
@@ -90,9 +99,10 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #89b4fa;
-  color: #1e1e2e;
-  font-size: 11px;
+  background: var(--dusk);
+  color: #fff;
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
   font-weight: 700;
   margin-right: 6px;
   vertical-align: middle;
@@ -106,16 +116,20 @@
 
 .open-btn {
   padding: 3px 10px;
-  font-size: 12px;
-  border: 1px solid #4a9eff;
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border: 1px solid var(--dusk);
   border-radius: 4px;
-  background: #fff;
-  color: #4a9eff;
+  background: transparent;
+  color: var(--dusk);
   cursor: pointer;
   white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
 }
 
 .open-btn:hover {
-  background: #4a9eff;
+  background: var(--dusk);
   color: #fff;
 }
