@@ -1,8 +1,10 @@
 import { app, BrowserWindow, shell, ipcMain } from 'electron'
 import { join } from 'path'
 import { signInWithGoogle, signOutGoogle } from './auth/google'
+import { signInWithMicrosoft, signOutMicrosoft } from './auth/microsoft'
 import { getAccounts, addAccount, removeAccount } from './accounts'
-import { listFiles } from './drive/google'
+import { listFiles as listGoogleFiles } from './drive/google'
+import { listFiles as listOneDriveFiles } from './drive/onedrive'
 import { searchAllAccounts } from './search'
 
 function createWindow(): void {
@@ -21,7 +23,8 @@ function createWindow(): void {
       // Security: disable ability to run local files
       webSecurity: true
     },
-    title: 'Cloud File Browser',
+    title: 'Northlight Vault',
+    icon: app.isPackaged ? undefined : join(process.cwd(), 'resources', 'icon.png'),
     show: false
   })
 
@@ -62,8 +65,22 @@ ipcMain.handle('accounts:disconnect', async (_event, accountId: string) => {
   removeAccount(accountId)
 })
 
+ipcMain.handle('accounts:connect-onedrive', async () => {
+  const account = await signInWithMicrosoft()
+  addAccount(account)
+  return account
+})
+
+ipcMain.handle('accounts:disconnect-onedrive', async (_event, accountId: string) => {
+  await signOutMicrosoft(accountId)
+  removeAccount(accountId)
+})
+
 ipcMain.handle('drive:listFiles', async (_event, accountId: string, folderId: string) => {
-  return listFiles(accountId, folderId)
+  const account = getAccounts().find((a) => a.id === accountId)
+  if (!account) throw new Error(`Account not found: ${accountId}`)
+  if (account.provider === 'onedrive') return listOneDriveFiles(accountId, folderId)
+  return listGoogleFiles(accountId, folderId)
 })
 
 ipcMain.handle('search:query', async (_event, query: string) => {
@@ -71,6 +88,13 @@ ipcMain.handle('search:query', async (_event, query: string) => {
   const results = await searchAllAccounts(query)
   console.log('[search] results count:', results.length)
   return results
+})
+
+ipcMain.handle('file:open', async (_event, url: string) => {
+  // Only open https:// URLs — never file paths or other protocols
+  if (typeof url === 'string' && url.startsWith('https://')) {
+    await shell.openExternal(url)
+  }
 })
 
 app.whenReady().then(() => {

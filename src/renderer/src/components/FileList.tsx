@@ -8,6 +8,7 @@ interface DriveFile {
   size: string | null
   modifiedTime: string | null
   isFolder: boolean
+  webViewLink: string | null
 }
 
 interface BreadcrumbItem {
@@ -126,6 +127,7 @@ export function FileList({ accountId, accountName }: Props): JSX.Element {
               <th className="col-name">Name</th>
               <th className="col-size">Size</th>
               <th className="col-date">Modified</th>
+              <th className="col-action"></th>
             </tr>
           </thead>
           <tbody>
@@ -141,6 +143,20 @@ export function FileList({ accountId, accountName }: Props): JSX.Element {
                 </td>
                 <td className="col-size">{file.isFolder ? '—' : formatSize(file.size)}</td>
                 <td className="col-date">{formatDate(file.modifiedTime)}</td>
+                <td className="col-action">
+                  {!file.isFolder && file.webViewLink && (
+                    <button
+                      className="open-btn"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        window.api.openFile(file.webViewLink!)
+                      }}
+                      title="Open in browser"
+                    >
+                      Open
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

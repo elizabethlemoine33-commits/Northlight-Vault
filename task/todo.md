@@ -189,11 +189,195 @@
 
 ---
 
-## v1.1 Backlog
-- [ ] Open files on click — Google Docs/Sheets/Slides in browser; PDFs/Word with default Windows app
+## v1.1 Backlog (promoted to v2 — see Phases 7–9 below)
+- [x] Open files on click → Phase 7
 - [ ] Add additional Google accounts (test with 2nd account)
 - [ ] Rate limit / retry handling for Drive API
 - [ ] Token expiry prompt — re-auth flow if refresh token expires
+
+---
+
+## v2 — Phases 7, 8, 9
+
+---
+
+## Phase 7 — Open Files (Priority 1)
+
+**Goal:** Single click opens any file from the file browser or search results in the default web browser.
+
+**Plain-English explanation:** Every file stored in Google Drive has a URL (called a `webViewLink`) that opens it in a browser tab. We need to pass that URL from the backend (main process) to the frontend (renderer), then call Electron's `shell.openExternal()` to open it — the same way a link on a webpage opens in your browser.
+
+### 7.1 Backend — Return webViewLink with file data
+- [x] **7.1.1** In `src/main/drive/google.ts`, added `webViewLink` to the fields requested from the Drive API ✅
+- [x] **7.1.2** Verify the returned file objects now include the link field — TypeScript typecheck passed ✅
+
+### 7.2 Backend — IPC handler to open URLs
+- [x] **7.2.1** In `src/main/index.ts`, added IPC handler `file:open` that calls `shell.openExternal(url)` ✅
+- [x] **7.2.2** URL validated with `startsWith('https://')` before opening ✅
+
+### 7.3 Preload bridge — expose the open function
+- [x] **7.3.1** In `src/preload/index.ts`, added `openFile(url: string)` to the exposed API ✅
+
+### 7.4 Frontend — File browser "Open" button
+- [x] **7.4.1** In `src/renderer/src/components/FileList.tsx`, added "Open" button for non-folder items ✅
+- [x] **7.4.2** Clicking "Open" calls `window.api.openFile(webViewLink)` ✅
+- [x] **7.4.3** Folders still navigate into the folder — row click unchanged ✅
+
+### 7.5 Frontend — Search results "Open" button
+- [x] **7.5.1** In `src/renderer/src/components/SearchResults.tsx`, added "Open" button to each result ✅
+- [x] **7.5.2** Clicking "Open" calls `window.api.openFile(webViewLink)` with `stopPropagation` ✅
+- [x] **7.5.3** Row click (switch account tab) still works as before ✅
+
+### 7.6 Search backend — include webViewLink in results
+- [x] **7.6.1** In `src/main/search/index.ts`, added `webViewLink` to fields and interface ✅
+
+### 7.7 Security review
+- [x] **7.7.1** URL validation (https:// check) confirmed in `file:open` handler ✅
+- [x] **7.7.2** `webViewLink` contains no tokens or secrets — standard Drive URL ✅
+- [x] **7.7.3** TypeScript typecheck passed with 0 errors; no existing behavior changed ✅
+
+### 7.8 Commit checkpoint
+- [ ] **7.8.1** Commit: "feat: open files in browser from file browser and search results"
+
+---
+
+## Phase 8 — Microsoft OneDrive Support (Priority 2)
+
+**Goal:** Connect one or more OneDrive accounts alongside Google Drive. Browse files, search, and open files from OneDrive — using the same tab-based UI.
+
+**Plain-English explanation:** OneDrive uses Microsoft's identity platform (called MSAL) instead of Google's OAuth system. The steps are similar — open a sign-in window, capture an auth code, exchange it for tokens, store tokens in the Windows Credential Store — but the library and API endpoints are different. Files are listed using the Microsoft Graph API (Microsoft's equivalent of the Google Drive API).
+
+### 8.1 Install packages
+- [x] **8.1.1** Installed `@azure/msal-node` and `@microsoft/microsoft-graph-client` ✅
+- [x] **8.1.3** 0 vulnerabilities confirmed ✅
+
+### 8.2 Azure credentials — secure setup
+- [x] **8.2.1** `azure-credentials.json` created in resources/ — gitignored ✅
+- [x] **8.2.2** Added to `.gitignore` ✅
+- [x] **8.2.3** Client ID configured ✅
+- [x] **8.2.4** Used public client (PKCE) flow — no client secret required ✅
+- [x] **Note:** App registered using personal Microsoft account at portal.azure.com; MSAL replaced with direct PKCE implementation using Node crypto + fetch ✅
+
+### 8.3 Backend — Microsoft OAuth flow
+- [x] **8.3.1** Created `src/main/auth/microsoft.ts` ✅
+- [x] **8.3.2** Opens Electron BrowserWindow to Microsoft sign-in URL ✅
+- [x] **8.3.3** Captures auth code via redirect to `http://localhost:58342` ✅
+- [x] **8.3.4** Exchanges code for tokens using PKCE (no MSAL) ✅
+- [x] **8.3.5** Tokens stored in Windows Credential Store via keytar ✅
+- [x] **8.3.6** User profile fetched from Microsoft Graph (/me) ✅
+
+### 8.4 Backend — Account management for OneDrive
+- [x] **8.4.1** `src/main/accounts.ts` updated — supports `provider: 'google' | 'onedrive'` ✅
+- [x] **8.4.2** IPC handler `accounts:connect-onedrive` added ✅
+- [x] **8.4.3** IPC handler `accounts:disconnect-onedrive` added ✅
+
+### 8.5 Backend — OneDrive file listing
+- [x] **8.5.1** Created `src/main/drive/onedrive.ts` ✅
+- [x] **8.5.2** Lists files/folders via Microsoft Graph API ✅
+- [x] **8.5.3** Returns same shape as Google Drive results ✅
+- [x] **8.5.4** `drive:listFiles` IPC handler auto-routes by provider ✅
+
+### 8.6 Backend — OneDrive token refresh
+- [x] **8.6.1** `getValidAccessToken()` refreshes silently using refresh token ✅
+- [x] **8.6.2** Updated tokens saved back to keytar ✅
+
+### 8.7 Backend — Include OneDrive in universal search
+- [x] **8.7.1** `search/index.ts` fans out to OneDrive accounts ✅
+- [x] **8.7.2** Uses `/me/drive/search(q='...')` Graph endpoint ✅
+- [x] **8.7.3** Results merged and sorted by modified date ✅
+
+### 8.8 Preload bridge — expose OneDrive functions
+- [x] **8.8.1** `connectOneDrive()` and `disconnectOneDrive()` exposed in preload ✅
+
+### 8.9 Frontend — OneDrive account tabs
+- [x] **8.9.1** "Connect OneDrive" button added (blue, distinct from Google button) ✅
+- [x] **8.9.2** OneDrive accounts show blue avatar + "OneDrive" badge ✅
+- [x] **8.9.3** Selecting OneDrive tab shows file browser ✅
+
+### 8.10 Frontend — OneDrive file browser
+- [x] **8.10.1** FileList.tsx reused — works for OneDrive with no changes ✅
+- [x] **8.10.2** Folder navigation and breadcrumbs confirmed working ✅
+- [x] **8.10.3** Open button works for OneDrive files ✅
+
+### 8.11 Frontend — OneDrive in search results
+- [x] **8.11.1** OneDrive files appear in universal search results ✅
+- [x] **8.11.2** Account badge shows account email ✅
+- [x] **8.11.3** Open button works for OneDrive search results ✅
+
+### 8.12 Security review
+- [x] **8.12.1** No credentials in renderer or preload ✅
+- [x] **8.12.2** Tokens in keytar only — never logged ✅
+- [x] **8.12.3** `azure-credentials.json` gitignored and absent from history ✅
+- [x] **8.12.4** All OneDrive API calls in main process only ✅
+- [x] **8.12.5** Google Drive browse, search, and open confirmed intact ✅
+
+### 8.13 Commit checkpoint
+- [ ] **8.13.1** Commit: "feat: Microsoft OneDrive multi-account support with file browser and search"
+
+---
+
+## Phase 9 — Northlight Vault Brand Refresh (Priority 3)
+
+**Goal:** Rename the app "Northlight Vault" and apply Elizabeth's Northlight brand identity — dark Aurora palette, Jost/Outfit fonts, gradient accent bar, and the document-with-aurora-rays icon.
+
+**Plain-English explanation:** Right now the app looks like a generic dark UI. We're going to give it a personality that matches Elizabeth's consulting brand. The biggest changes are: new name everywhere, new color scheme (deep midnight black + aurora gradient accents), new fonts, and a proper icon. Nothing about how the app *works* changes — only how it looks.
+
+**Brand reference files:**
+- Colors, fonts, gradients: `C:\Users\erand\Downloads\northlight_brand_v8.html`
+- Icon SVG: `C:\Users\erand\Downloads\northlight_vault_icon_v2.html`
+
+**Aurora palette:**
+- Midnight (background): `#0E0E14`
+- Birch (primary text): `#F0ECE4`
+- Glacial (accent): `#4FC3C8`
+- Boreal (mid): `#5B8DD9`
+- Dusk (mid): `#8B6FD4`
+- Aurora (accent): `#C46FAA`
+- Gradient bar: `linear-gradient(90deg, #4fc3c8 0%, #5b8dd9 30%, #8b6fd4 65%, #c46faa 100%)`
+
+**Fonts:** Jost (headings, labels, UI chrome) + Outfit (body text, metadata) — loaded from Google Fonts via HTML `<link>`
+
+---
+
+### 9.1 App rename
+- [x] **9.1.1** In `package.json` — change `name` to `northlight-vault` and `productName` to `Northlight Vault` ✅
+- [x] **9.1.2** In `src/main/index.ts` — change `BrowserWindow` title to `"Northlight Vault"` ✅
+- [x] **9.1.3** In `src/renderer/index.html` — change `<title>` to `"Northlight Vault"` ✅
+- [x] **9.1.4** In `CLAUDE.md` — update "What This Project Is" section to reflect new name ✅
+
+### 9.2 Fonts
+- [x] **9.2.1** In `src/renderer/index.html` — add Google Fonts `<link>` for Jost + Outfit; CSP updated ✅
+- [x] **9.2.2** In `src/renderer/src/index.css` — `Outfit` set as default body font ✅
+
+### 9.3 CSS variables / design tokens
+- [x] **9.3.1** Full Aurora palette defined as CSS custom properties in `index.css` ✅
+- [x] **9.3.2** `body` background and text updated to Midnight/Birch ✅
+
+### 9.4 Sidebar redesign
+- [x] **9.4.1–9.4.6** Sidebar fully redesigned: deep bg, gradient bar, gradient title, muted subtitle, left-border active tab ✅
+
+### 9.5 Button styling
+- [x] **9.5.1–9.5.3** Connect buttons use Aurora gradient; Open button is dusk purple ghost ✅
+
+### 9.6 Provider badges
+- [x] **9.6.1–9.6.3** Badges and avatars updated to brand palette ✅
+
+### 9.7 Main content area
+- [x] **9.7.1–9.7.4** File list, search results, breadcrumbs, search bar all dark-themed ✅
+
+### 9.8 App icon
+- [x] **9.8.1–9.8.4** `make-icon.js` generates 256×256 PNG+ICO; `BrowserWindow` icon set for dev mode; `azure-credentials.json` added to extraResources ✅
+
+### 9.9 Security review
+- [x] **9.9.1** No logic changes — CSS, HTML, and config only ✅
+- [x] **9.9.2** CSP updated to allow Google Fonts CDN ✅
+- [x] **9.9.3** TypeScript typecheck — 0 errors ✅
+
+### 9.10 Visual verification
+- [x] **9.10.1–9.10.7** App running with full Northlight Vault brand; Google Drive browse/search/open confirmed working ✅
+
+### 9.11 Commit checkpoint
+- [x] **9.11.1** Committed: brand refresh + icon commits ✅
 
 ---
 

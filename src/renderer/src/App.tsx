@@ -3,11 +3,11 @@ import './App.css'
 import { FileList } from './components/FileList'
 import { SearchResults } from './components/SearchResults'
 
-interface GoogleAccount {
+interface Account {
   id: string
   email: string
   displayName: string
-  provider: 'google'
+  provider: 'google' | 'onedrive'
 }
 
 interface SearchResult {
@@ -16,6 +16,7 @@ interface SearchResult {
   mimeType: string
   modifiedTime: string | null
   isFolder: boolean
+  webViewLink: string | null
   accountId: string
   accountEmail: string
   accountName: string
@@ -24,19 +25,23 @@ interface SearchResult {
 declare global {
   interface Window {
     api: {
-      getAccounts: () => Promise<GoogleAccount[]>
-      connectAccount: () => Promise<GoogleAccount>
+      getAccounts: () => Promise<Account[]>
+      connectAccount: () => Promise<Account>
       disconnectAccount: (accountId: string) => Promise<void>
+      connectOneDrive: () => Promise<Account>
+      disconnectOneDrive: (accountId: string) => Promise<void>
       listFiles: (accountId: string, folderId: string) => Promise<unknown[]>
       searchFiles: (query: string) => Promise<SearchResult[]>
+      openFile: (url: string) => Promise<void>
     }
   }
 }
 
 function App(): JSX.Element {
-  const [accounts, setAccounts] = useState<GoogleAccount[]>([])
+  const [accounts, setAccounts] = useState<Account[]>([])
   const [activeAccountId, setActiveAccountId] = useState<string | null>(null)
-  const [connecting, setConnecting] = useState(false)
+  const [connectingGoogle, setConnectingGoogle] = useState(false)
+  const [connectingOneDrive, setConnectingOneDrive] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   // Search state
@@ -55,7 +60,6 @@ function App(): JSX.Element {
   }, [])
 
   // Debounced search: wait 350ms after the user stops typing before firing
-  // This avoids hammering the API on every keystroke
   function handleSearchInput(value: string) {
     setSearchQuery(value)
     if (debounceRef.current) clearTimeout(debounceRef.current)
@@ -85,8 +89,8 @@ function App(): JSX.Element {
     setSearchResults([])
   }
 
-  async function handleConnect() {
-    setConnecting(true)
+  async function handleConnectGoogle() {
+    setConnectingGoogle(true)
     setError(null)
     try {
       const account = await window.api.connectAccount()
@@ -96,18 +100,39 @@ function App(): JSX.Element {
       })
       setActiveAccountId(account.id)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Sign-in failed. Please try again.')
+      setError(err instanceof Error ? err.message : 'Google sign-in failed. Please try again.')
     } finally {
-      setConnecting(false)
+      setConnectingGoogle(false)
     }
   }
 
-  async function handleDisconnect(accountId: string) {
-    await window.api.disconnectAccount(accountId)
-    setAccounts((prev) => prev.filter((a) => a.id !== accountId))
+  async function handleConnectOneDrive() {
+    setConnectingOneDrive(true)
+    setError(null)
+    try {
+      const account = await window.api.connectOneDrive()
+      setAccounts((prev) => {
+        const exists = prev.find((a) => a.id === account.id)
+        return exists ? prev.map((a) => (a.id === account.id ? account : a)) : [...prev, account]
+      })
+      setActiveAccountId(account.id)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'OneDrive sign-in failed. Please try again.')
+    } finally {
+      setConnectingOneDrive(false)
+    }
+  }
+
+  async function handleDisconnect(account: Account) {
+    if (account.provider === 'onedrive') {
+      await window.api.disconnectOneDrive(account.id)
+    } else {
+      await window.api.disconnectAccount(account.id)
+    }
+    setAccounts((prev) => prev.filter((a) => a.id !== account.id))
     setActiveAccountId((prev) => {
-      if (prev !== accountId) return prev
-      const remaining = accounts.filter((a) => a.id !== accountId)
+      if (prev !== account.id) return prev
+      const remaining = accounts.filter((a) => a.id !== account.id)
       return remaining.length > 0 ? remaining[0].id : null
     })
   }
@@ -117,7 +142,12 @@ function App(): JSX.Element {
   return (
     <div className="app">
       <header className="sidebar">
-        <div className="sidebar-title">Cloud File Browser</div>
+        <div className="sidebar-gradient-bar" />
+        <div className="sidebar-inner">
+        <div className="sidebar-brand">
+          <div className="sidebar-title">Northlight Vault</div>
+          <div className="sidebar-subtitle">Cloud File Browser</div>
+        </div>
 
         <div className="account-list">
           {accounts.map((account) => (
@@ -126,14 +156,21 @@ function App(): JSX.Element {
               className={`account-tab ${account.id === activeAccountId && !isSearching ? 'active' : ''}`}
               onClick={() => { setSearchQuery(''); setActiveAccountId(account.id) }}
             >
-              <div className="account-avatar">{account.displayName[0].toUpperCase()}</div>
+              <div className={`account-avatar ${account.provider === 'onedrive' ? 'avatar-onedrive' : ''}`}>
+                {account.displayName[0].toUpperCase()}
+              </div>
               <div className="account-info">
-                <div className="account-name">{account.displayName}</div>
+                <div className="account-name">
+                  {account.displayName}
+                  <span className={`provider-badge ${account.provider === 'onedrive' ? 'badge-onedrive' : 'badge-google'}`}>
+                    {account.provider === 'onedrive' ? 'OneDrive' : 'Drive'}
+                  </span>
+                </div>
                 <div className="account-email">{account.email}</div>
               </div>
               <button
                 className="disconnect-btn"
-                onClick={(e) => { e.stopPropagation(); handleDisconnect(account.id) }}
+                onClick={(e) => { e.stopPropagation(); handleDisconnect(account) }}
                 title="Disconnect account"
               >
                 ×
@@ -142,11 +179,17 @@ function App(): JSX.Element {
           ))}
         </div>
 
-        <button className="connect-btn" onClick={handleConnect} disabled={connecting}>
-          {connecting ? 'Signing in…' : '+ Connect Google Drive'}
-        </button>
+        <div className="connect-buttons">
+          <button className="connect-btn" onClick={handleConnectGoogle} disabled={connectingGoogle}>
+            {connectingGoogle ? 'Signing in…' : '+ Connect Google Drive'}
+          </button>
+          <button className="connect-btn connect-btn-onedrive" onClick={handleConnectOneDrive} disabled={connectingOneDrive}>
+            {connectingOneDrive ? 'Signing in…' : '+ Connect OneDrive'}
+          </button>
+        </div>
 
         {error && <div className="error-message">{error}</div>}
+        </div>
       </header>
 
       <main className="content">
@@ -183,7 +226,7 @@ function App(): JSX.Element {
           ) : (
             <div className="placeholder">
               <h2>No accounts connected</h2>
-              <p>Click "Connect Google Drive" to get started.</p>
+              <p>Click "Connect Google Drive" or "Connect OneDrive" to get started.</p>
             </div>
           )}
         </div>

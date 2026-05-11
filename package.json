@@ -1,7 +1,7 @@
 {
-  "name": "cloud-file-browser",
+  "name": "northlight-vault",
   "version": "0.1.0",
-  "description": "Multi-account Google Drive browser for Windows",
+  "description": "Northlight Vault — multi-account cloud file browser for Windows",
   "main": "out/main/index.js",
   "scripts": {
     "dev": "electron-vite dev",
@@ -22,15 +22,17 @@
     "vite": "^6.0.0"
   },
   "dependencies": {
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0",
+    "@azure/msal-node": "^5.2.0",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
     "electron-store": "^8.2.0",
+    "googleapis": "^140.0.0",
     "keytar": "^7.9.0",
-    "googleapis": "^140.0.0"
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
   },
   "build": {
-    "appId": "com.elizabethlemoine.cloudfilebrowser",
-    "productName": "Cloud File Browser",
+    "appId": "com.elizabethlemoine.northlightvault",
+    "productName": "Northlight Vault",
     "directories": {
       "output": "release"
     },
@@ -43,6 +45,10 @@
       {
         "from": "resources/google-credentials.json",
         "to": "google-credentials.json"
+      },
+      {
+        "from": "resources/azure-credentials.json",
+        "to": "azure-credentials.json"
       }
     ],
     "win": {
