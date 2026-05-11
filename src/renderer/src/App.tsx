@@ -16,6 +16,7 @@ interface SearchResult {
   mimeType: string
   modifiedTime: string | null
   isFolder: boolean
+  webViewLink: string | null
   accountId: string
   accountEmail: string
   accountName: string
@@ -29,6 +30,7 @@ declare global {
       disconnectAccount: (accountId: string) => Promise<void>
       listFiles: (accountId: string, folderId: string) => Promise<unknown[]>
       searchFiles: (query: string) => Promise<SearchResult[]>
+      openFile: (url: string) => Promise<void>
     }
   }
 }

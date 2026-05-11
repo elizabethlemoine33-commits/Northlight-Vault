@@ -17,5 +17,8 @@ contextBridge.exposeInMainWorld('api', {
     ipcRenderer.invoke('drive:listFiles', accountId, folderId),
 
   // Searches all connected accounts simultaneously; returns merged results
-  searchFiles: (query: string) => ipcRenderer.invoke('search:query', query)
+  searchFiles: (query: string) => ipcRenderer.invoke('search:query', query),
+
+  // Opens a file URL in the system's default web browser
+  openFile: (url: string) => ipcRenderer.invoke('file:open', url)
 })

@@ -6,6 +6,7 @@ interface SearchResult {
   mimeType: string
   modifiedTime: string | null
   isFolder: boolean
+  webViewLink: string | null
   accountId: string
   accountEmail: string
   accountName: string
@@ -63,6 +64,7 @@ export function SearchResults({ results, loading, query, onSelectAccount }: Prop
             <th className="col-name">Name</th>
             <th className="col-account">Account</th>
             <th className="col-date">Modified</th>
+            <th className="col-action"></th>
           </tr>
         </thead>
         <tbody>
@@ -71,7 +73,7 @@ export function SearchResults({ results, loading, query, onSelectAccount }: Prop
               key={`${r.accountId}-${r.id}`}
               className="result-row"
               onClick={() => onSelectAccount(r.accountId)}
-              title={`Open ${r.accountName}'s Drive`}
+              title={`Go to ${r.accountName}'s Drive`}
             >
               <td className="col-name">
                 <span className="file-icon">{fileIcon(r.mimeType, r.isFolder)}</span>
@@ -82,6 +84,20 @@ export function SearchResults({ results, loading, query, onSelectAccount }: Prop
                 {r.accountEmail}
               </td>
               <td className="col-date">{formatDate(r.modifiedTime)}</td>
+              <td className="col-action">
+                {r.webViewLink && (
+                  <button
+                    className="open-btn"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      window.api.openFile(r.webViewLink!)
+                    }}
+                    title="Open in browser"
+                  >
+                    Open
+                  </button>
+                )}
+              </td>
             </tr>
           ))}
         </tbody>

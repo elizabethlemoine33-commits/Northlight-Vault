@@ -8,6 +8,7 @@ export interface SearchResult {
   mimeType: string
   modifiedTime: string | null
   isFolder: boolean
+  webViewLink: string | null  // URL to open the file in a browser tab
   accountId: string
   accountEmail: string
   accountName: string
@@ -29,7 +30,7 @@ async function searchOneAccount(
 
   const response = await drive.files.list({
     q: `name contains '${safeQuery}' and trashed = false`,
-    fields: 'files(id, name, mimeType, modifiedTime)',
+    fields: 'files(id, name, mimeType, modifiedTime, webViewLink)',
     pageSize: 25,
     orderBy: 'modifiedTime desc'
   })
@@ -40,6 +41,7 @@ async function searchOneAccount(
     mimeType: f.mimeType ?? '',
     modifiedTime: f.modifiedTime ?? null,
     isFolder: f.mimeType === FOLDER_MIME,
+    webViewLink: f.webViewLink ?? null,
     accountId,
     accountEmail,
     accountName

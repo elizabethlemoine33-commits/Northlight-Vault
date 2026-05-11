@@ -73,6 +73,13 @@ ipcMain.handle('search:query', async (_event, query: string) => {
   return results
 })
 
+ipcMain.handle('file:open', async (_event, url: string) => {
+  // Only open https:// URLs — never file paths or other protocols
+  if (typeof url === 'string' && url.startsWith('https://')) {
+    await shell.openExternal(url)
+  }
+})
+
 app.whenReady().then(() => {
   createWindow()
 
