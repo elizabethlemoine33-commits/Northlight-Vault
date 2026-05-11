@@ -22,11 +22,13 @@
     "vite": "^6.0.0"
   },
   "dependencies": {
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0",
+    "@azure/msal-node": "^5.2.0",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
     "electron-store": "^8.2.0",
+    "googleapis": "^140.0.0",
     "keytar": "^7.9.0",
-    "googleapis": "^140.0.0"
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
   },
   "build": {
     "appId": "com.elizabethlemoine.cloudfilebrowser",

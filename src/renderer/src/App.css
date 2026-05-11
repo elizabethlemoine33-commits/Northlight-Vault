@@ -98,7 +98,41 @@
 .account-tab:hover .disconnect-btn { opacity: 1; }
 .disconnect-btn:hover { color: #f38ba8; }
 
-/* Connect button */
+/* OneDrive avatar — teal instead of blue */
+.avatar-onedrive {
+  background: #0078d4;
+}
+
+/* Provider badge shown next to the account name */
+.provider-badge {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  margin-left: 6px;
+  vertical-align: middle;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge-google {
+  background: #34a853;
+  color: #fff;
+}
+
+.badge-onedrive {
+  background: #0078d4;
+  color: #fff;
+}
+
+/* Connect buttons */
+.connect-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .connect-btn {
   background: #89b4fa;
   color: #1e1e2e;
@@ -113,6 +147,13 @@
 
 .connect-btn:hover:not(:disabled) { background: #b4befe; }
 .connect-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.connect-btn-onedrive {
+  background: #0078d4;
+  color: #fff;
+}
+
+.connect-btn-onedrive:hover:not(:disabled) { background: #106ebe; }
 
 .error-message {
   font-size: 12px;

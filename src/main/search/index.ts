@@ -1,5 +1,6 @@
 import { google } from 'googleapis'
 import { getAuthenticatedClient } from '../auth/google'
+import { searchFiles as searchOneDrive } from '../drive/onedrive'
 import { getAccounts } from '../accounts'
 
 export interface SearchResult {
@@ -16,7 +17,7 @@ export interface SearchResult {
 
 const FOLDER_MIME = 'application/vnd.google-apps.folder'
 
-async function searchOneAccount(
+async function searchGoogleAccount(
   accountId: string,
   accountEmail: string,
   accountName: string,
@@ -48,6 +49,21 @@ async function searchOneAccount(
   }))
 }
 
+async function searchOneDriveAccount(
+  accountId: string,
+  accountEmail: string,
+  accountName: string,
+  query: string
+): Promise<SearchResult[]> {
+  const files = await searchOneDrive(accountId, query)
+  return files.map((f) => ({
+    ...f,
+    accountId,
+    accountEmail,
+    accountName
+  }))
+}
+
 // Searches all connected accounts simultaneously and returns merged results.
 // Uses Promise.allSettled so a failure in one account doesn't cancel the others.
 export async function searchAllAccounts(query: string): Promise<SearchResult[]> {
@@ -56,9 +72,12 @@ export async function searchAllAccounts(query: string): Promise<SearchResult[]> 
   const accounts = getAccounts()
   if (accounts.length === 0) return []
 
-  const searches = accounts.map((a) =>
-    searchOneAccount(a.id, a.email, a.displayName, query)
-  )
+  const searches = accounts.map((a) => {
+    if (a.provider === 'onedrive') {
+      return searchOneDriveAccount(a.id, a.email, a.displayName, query)
+    }
+    return searchGoogleAccount(a.id, a.email, a.displayName, query)
+  })
 
   const settled = await Promise.allSettled(searches)
 
@@ -68,5 +87,12 @@ export async function searchAllAccounts(query: string): Promise<SearchResult[]> 
     }
   })
 
-  return settled.flatMap((r) => (r.status === 'fulfilled' ? r.value : []))
+  const allResults = settled.flatMap((r) => (r.status === 'fulfilled' ? r.value : []))
+  allResults.sort((a, b) => {
+    if (!a.modifiedTime) return 1
+    if (!b.modifiedTime) return -1
+    return new Date(b.modifiedTime).getTime() - new Date(a.modifiedTime).getTime()
+  })
+
+  return allResults
 }

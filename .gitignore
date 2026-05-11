@@ -12,6 +12,7 @@ release/
 *.credentials.json
 client_secret*.json
 resources/google-credentials.json
+resources/azure-credentials.json
 
 # Build output
 out/
