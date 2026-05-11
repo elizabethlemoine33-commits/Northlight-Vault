@@ -45,6 +45,10 @@
       {
         "from": "resources/google-credentials.json",
         "to": "google-credentials.json"
+      },
+      {
+        "from": "resources/azure-credentials.json",
+        "to": "azure-credentials.json"
       }
     ],
     "win": {

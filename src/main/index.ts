@@ -24,6 +24,7 @@ function createWindow(): void {
       webSecurity: true
     },
     title: 'Northlight Vault',
+    icon: app.isPackaged ? undefined : join(process.cwd(), 'resources', 'icon.png'),
     show: false
   })
 

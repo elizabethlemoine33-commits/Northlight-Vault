@@ -107,15 +107,17 @@ npm run typecheck # Check TypeScript without building
 | Phase 0 — Prerequisites | ✅ Complete |
 | Phase 1 — Project Scaffold | ✅ Complete |
 | Phase 2 — Google Drive Auth | ✅ Complete |
-| Phase 3 — OneDrive Auth | ~~Dropped~~ |
+| Phase 3 — OneDrive Auth | ~~Dropped then revived as Phase 8~~ |
 | Phase 4 — File Browser | ✅ Complete |
 | Phase 5 — Universal Search | ✅ Complete |
 | Phase 6 — Polish & Packaging | ✅ Complete |
+| Phase 7 — Open Files | ✅ Complete |
+| Phase 8 — Microsoft OneDrive | ✅ Complete |
+| Phase 9 — Northlight Vault Brand | ✅ Complete |
 
-**v1.0 shipped** — installer at `release/Cloud File Browser Setup 0.1.0.exe`
+**v2.0 shipped** — installer at `release/Northlight Vault Setup 0.1.0.exe`
 
-## v1.1 Backlog
-- Open files on click (Google Docs in browser; PDFs/Word with default Windows app)
+## v2.1 Backlog
 - Add/test additional Google accounts
 - Rate limit / retry handling
 - Token expiry re-auth prompt
