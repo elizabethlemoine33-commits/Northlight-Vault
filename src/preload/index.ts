@@ -27,5 +27,14 @@ contextBridge.exposeInMainWorld('api', {
   searchFiles: (query: string) => ipcRenderer.invoke('search:query', query),
 
   // Opens a file URL in the system's default web browser
-  openFile: (url: string) => ipcRenderer.invoke('file:open', url)
+  openFile: (url: string) => ipcRenderer.invoke('file:open', url),
+
+  // Queries GitHub releases API to check if a newer version of the app is available
+  checkForUpdates: () => ipcRenderer.invoke('app:checkForUpdates'),
+
+  // Listen for the Help menu "Check for Updates" click (triggered by native menu)
+  onMenuCheckForUpdates: (callback: () => void) => {
+    ipcRenderer.on('menu:check-for-updates', callback)
+    return () => ipcRenderer.removeListener('menu:check-for-updates', callback)
+  }
 })

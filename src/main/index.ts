@@ -1,4 +1,4 @@
-import { app, BrowserWindow, shell, ipcMain } from 'electron'
+import { app, BrowserWindow, shell, ipcMain, Menu } from 'electron'
 import { join } from 'path'
 import { signInWithGoogle, signOutGoogle } from './auth/google'
 import { signInWithMicrosoft, signOutMicrosoft } from './auth/microsoft'
@@ -6,6 +6,7 @@ import { getAccounts, addAccount, removeAccount } from './accounts'
 import { listFiles as listGoogleFiles } from './drive/google'
 import { listFiles as listOneDriveFiles } from './drive/onedrive'
 import { searchAllAccounts } from './search'
+import { checkForUpdates } from './utils/updateChecker'
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -90,6 +91,10 @@ ipcMain.handle('search:query', async (_event, query: string) => {
   return results
 })
 
+ipcMain.handle('app:checkForUpdates', async () => {
+  return checkForUpdates()
+})
+
 ipcMain.handle('file:open', async (_event, url: string) => {
   // Only open https:// URLs — never file paths or other protocols
   if (typeof url === 'string' && url.startsWith('https://')) {
@@ -97,7 +102,40 @@ ipcMain.handle('file:open', async (_event, url: string) => {
   }
 })
 
+function buildAppMenu(): void {
+  const changelogPath = app.isPackaged
+    ? join(process.resourcesPath, 'CHANGELOG.md')
+    : join(process.cwd(), 'CHANGELOG.md')
+
+  const template: Electron.MenuItemConstructorOptions[] = [
+    {
+      label: 'Help',
+      submenu: [
+        {
+          label: 'View Changelog',
+          click: () => shell.openPath(changelogPath)
+        },
+        {
+          label: 'Check for Updates…',
+          click: () => {
+            const win = BrowserWindow.getAllWindows()[0]
+            if (win) win.webContents.send('menu:check-for-updates')
+          }
+        },
+        { type: 'separator' },
+        {
+          label: `Northlight Vault v${app.getVersion()}`,
+          enabled: false
+        }
+      ]
+    }
+  ]
+
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template))
+}
+
 app.whenReady().then(() => {
+  buildAppMenu()
   createWindow()
 
   app.on('activate', () => {

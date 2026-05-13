@@ -381,6 +381,85 @@
 
 ---
 
+## Phase 10 — Versioning & Changelog (Sprint 2)
+
+### 10.1 Version bump
+- [ ] **10.1.1** Update `package.json` version: `0.1.0` → `1.0.0`
+
+### 10.2 Changelog
+- [ ] **10.2.1** Create `CHANGELOG.md` at project root with full history
+- [ ] **10.2.2** Add native Electron app menu to `src/main/index.ts`
+- [ ] **10.2.3** Help → "View Changelog" opens CHANGELOG.md in default text editor
+- [ ] **10.2.4** Commit checkpoint: "feat: version 1.0.0 + changelog"
+
+---
+
+## Phase 11 — Refresh Button (Sprint 2)
+
+- [ ] **11.1** Add refresh button to right of search bar in `App.tsx`
+- [ ] **11.2** Wire button to re-fetch files (or re-run search if searching)
+- [ ] **11.3** CSS: aurora gradient icon, spin animation on load, disabled state
+- [ ] **11.4** Security review (no logic, UI only)
+- [ ] **11.5** Commit checkpoint: "feat: refresh button in search bar"
+
+---
+
+## Phase 12 — Update Checker (Sprint 2)
+
+- [ ] **12.1** Create `src/main/utils/updateChecker.ts` — queries GitHub releases API
+- [ ] **12.2** Add IPC handler `app:checkForUpdates` in `src/main/index.ts`
+- [ ] **12.3** Expose `checkForUpdates()` in `src/preload/index.ts`
+- [ ] **12.4** Create `src/renderer/src/components/UpdateModal.tsx`
+- [ ] **12.5** Wire Help → "Check for Updates…" to show modal in `App.tsx`
+- [ ] **12.6** Security review
+- [ ] **12.7** Commit checkpoint: "feat: check for updates via GitHub releases"
+
+---
+
+## Phase 13 — Dropbox Integration (Sprint 2)
+
+### 13.1 Setup
+- [ ] **13.1.1** Install `dropbox` npm package
+- [ ] **13.1.2** Create `.env` with DROPBOX_APP_KEY and DROPBOX_APP_SECRET (gitignored)
+- [ ] **13.1.3** Verify `.env` is in `.gitignore`
+
+### 13.2 Backend — OAuth
+- [ ] **13.2.1** Create `src/main/auth/dropbox.ts` — OAuth 2.0 flow
+- [ ] **13.2.2** Token stored in keytar: `northlight-vault / dropbox-{accountId}`
+- [ ] **13.2.3** Export: `signInWithDropbox()`, `signOutDropbox()`
+
+### 13.3 Backend — File listing + Search
+- [ ] **13.3.1** Create `src/main/drive/dropbox.ts` — `/files/list_folder` + folder nav
+- [ ] **13.3.2** Add Dropbox search via `/files/search_v2` to search fan-out
+
+### 13.4 Integration
+- [ ] **13.4.1** Update `src/main/accounts.ts` — add `'dropbox'` to provider type
+- [ ] **13.4.2** Add IPC handlers `accounts:connect-dropbox` + `accounts:disconnect-dropbox`
+- [ ] **13.4.3** Update `src/main/search/index.ts` — include Dropbox accounts
+- [ ] **13.4.4** Update `src/preload/index.ts` — expose `connectDropbox()` + `disconnectDropbox()`
+
+### 13.5 UI
+- [ ] **13.5.1** Add "+ Connect Dropbox" button and Dropbox account tabs in `App.tsx`
+- [ ] **13.5.2** Dropbox badge/avatar styling in `App.css`
+
+### 13.6 Security review + testing
+- [ ] **13.6.1** Tokens in keytar only — never logged or exposed
+- [ ] **13.6.2** All Dropbox API calls through main process
+- [ ] **13.6.3** Test: OAuth flow, file listing, search, disconnect, offline error
+- [ ] **13.6.4** Commit checkpoint: "feat: Dropbox integration with OAuth, file listing, search"
+
+---
+
+## Phase 14 — Icon Update (Sprint 2)
+
+- [ ] **14.1** Copy new icon source file to `resources/`
+- [ ] **14.2** Update `make-icon.js` to generate PNG + ICO from new source
+- [ ] **14.3** Run `node make-icon.js` and verify output
+- [ ] **14.4** Test: dev mode taskbar icon, packaged installer icon
+- [ ] **14.5** Commit checkpoint: "feat: updated app icon to final Northlight design"
+
+---
+
 ## Review Section
 *(Filled in as we complete each phase)*
 

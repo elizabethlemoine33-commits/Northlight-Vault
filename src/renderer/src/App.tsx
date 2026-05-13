@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import { FileList } from './components/FileList'
 import { SearchResults } from './components/SearchResults'
+import { UpdateModal } from './components/UpdateModal'
 
 interface Account {
   id: string
@@ -33,6 +34,8 @@ declare global {
       listFiles: (accountId: string, folderId: string) => Promise<unknown[]>
       searchFiles: (query: string) => Promise<SearchResult[]>
       openFile: (url: string) => Promise<void>
+      checkForUpdates: () => Promise<unknown>
+      onMenuCheckForUpdates: (callback: () => void) => () => void
     }
   }
 }
@@ -43,6 +46,9 @@ function App(): JSX.Element {
   const [connectingGoogle, setConnectingGoogle] = useState(false)
   const [connectingOneDrive, setConnectingOneDrive] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [refreshKey, setRefreshKey] = useState(0)
+  const [refreshing, setRefreshing] = useState(false)
+  const [showUpdateModal, setShowUpdateModal] = useState(false)
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('')
@@ -57,6 +63,11 @@ function App(): JSX.Element {
       setAccounts(saved)
       if (saved.length > 0) setActiveAccountId(saved[0].id)
     })
+  }, [])
+
+  useEffect(() => {
+    const remove = window.api.onMenuCheckForUpdates(() => setShowUpdateModal(true))
+    return remove
   }, [])
 
   // Debounced search: wait 350ms after the user stops typing before firing
@@ -81,6 +92,22 @@ function App(): JSX.Element {
         setSearchLoading(false)
       }
     }, 350)
+  }
+
+  async function handleRefresh() {
+    if (refreshing) return
+    setRefreshing(true)
+    if (isSearching) {
+      try {
+        const results = await window.api.searchFiles(searchQuery)
+        setSearchResults(results)
+      } catch {
+        setSearchResults([])
+      }
+    } else {
+      setRefreshKey((k) => k + 1)
+    }
+    setTimeout(() => setRefreshing(false), 600)
   }
 
   function handleSearchSelectAccount(accountId: string) {
@@ -141,6 +168,7 @@ function App(): JSX.Element {
 
   return (
     <div className="app">
+      {showUpdateModal && <UpdateModal onClose={() => setShowUpdateModal(false)} />}
       <header className="sidebar">
         <div className="sidebar-gradient-bar" />
         <div className="sidebar-inner">
@@ -206,6 +234,15 @@ function App(): JSX.Element {
             {searchQuery && (
               <button className="search-clear" onClick={() => handleSearchInput('')}>×</button>
             )}
+            <button
+              className={`refresh-btn${refreshing ? ' refreshing' : ''}`}
+              onClick={handleRefresh}
+              disabled={refreshing}
+              title="Refresh file list"
+              aria-label="Refresh file list"
+            >
+              ↻
+            </button>
           </div>
         )}
 
@@ -222,6 +259,7 @@ function App(): JSX.Element {
             <FileList
               accountId={activeAccount.id}
               accountName={activeAccount.displayName}
+              refreshKey={refreshKey}
             />
           ) : (
             <div className="placeholder">

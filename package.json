@@ -1,6 +1,6 @@
 {
   "name": "northlight-vault",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Northlight Vault — multi-account cloud file browser for Windows",
   "main": "out/main/index.js",
   "scripts": {
@@ -49,6 +49,10 @@
       {
         "from": "resources/azure-credentials.json",
         "to": "azure-credentials.json"
+      },
+      {
+        "from": "CHANGELOG.md",
+        "to": "CHANGELOG.md"
       }
     ],
     "win": {

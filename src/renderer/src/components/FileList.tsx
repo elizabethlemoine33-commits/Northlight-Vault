@@ -19,6 +19,7 @@ interface BreadcrumbItem {
 interface Props {
   accountId: string
   accountName: string
+  refreshKey?: number
 }
 
 function formatSize(bytes: string | null): string {
@@ -51,7 +52,7 @@ function fileIcon(file: DriveFile): string {
   return '📄'
 }
 
-export function FileList({ accountId, accountName }: Props): JSX.Element {
+export function FileList({ accountId, accountName, refreshKey }: Props): JSX.Element {
   const [files, setFiles] = useState<DriveFile[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -64,7 +65,7 @@ export function FileList({ accountId, accountName }: Props): JSX.Element {
 
   useEffect(() => {
     loadFiles(currentFolder.id)
-  }, [currentFolder.id, accountId])
+  }, [currentFolder.id, accountId, refreshKey])
 
   async function loadFiles(folderId: string) {
     setLoading(true)
