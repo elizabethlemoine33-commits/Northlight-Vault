@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
+import wordmark from './assets/northlight-vault-browser.png'
 import { FileList } from './components/FileList'
 import { SearchResults } from './components/SearchResults'
 import { UpdateModal } from './components/UpdateModal'
@@ -195,8 +196,11 @@ function App(): JSX.Element {
         <div className="sidebar-gradient-bar" />
         <div className="sidebar-inner">
         <div className="sidebar-brand">
-          <div className="sidebar-title">Northlight Vault</div>
-          <div className="sidebar-subtitle">Cloud File Browser</div>
+          <img
+            src={wordmark}
+            alt="Northlight Vault"
+            className="sidebar-wordmark"
+          />
         </div>
 
         <div className="account-list">
