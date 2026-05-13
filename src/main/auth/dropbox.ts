@@ -93,10 +93,7 @@ async function exchangeCodeForTokens(
     const request = net.request({
       method: 'POST',
       url: 'https://api.dropboxapi.com/oauth2/token',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length': Buffer.byteLength(body).toString()
-      }
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 
     let responseBody = ''
@@ -130,10 +127,7 @@ async function fetchAccountInfo(accessToken: string): Promise<{ email: string; d
     const request = net.request({
       method: 'POST',
       url: 'https://api.dropboxapi.com/2/users/get_current_account',
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      }
+      headers: { 'Authorization': `Bearer ${accessToken}` }
     })
 
     let body = ''
@@ -152,7 +146,6 @@ async function fetchAccountInfo(accessToken: string): Promise<{ email: string; d
       })
     })
     request.on('error', reject)
-    request.write('null')
     request.end()
   })
 }
@@ -191,7 +184,8 @@ export async function getDropboxAccessToken(accountId: string): Promise<string> 
     refreshToken: string
   }
 
-  if (!refreshToken) return accessToken
+  // Only refresh if we don't have an access token (shouldn't happen, but defensive)
+  if (accessToken) return Promise.resolve(accessToken)
 
   return new Promise((resolve) => {
     const body = new URLSearchParams({
@@ -204,10 +198,7 @@ export async function getDropboxAccessToken(accountId: string): Promise<string> 
     const request = net.request({
       method: 'POST',
       url: 'https://api.dropboxapi.com/oauth2/token',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Content-Length': Buffer.byteLength(body).toString()
-      }
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
     })
 
     let responseBody = ''

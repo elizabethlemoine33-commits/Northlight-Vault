@@ -65,9 +65,26 @@
 .account-list {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0;
   flex: 1;
   overflow-y: auto;
+}
+
+.account-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-bottom: 6px;
+}
+
+.account-group-label {
+  font-family: 'Jost', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding: 6px 10px 3px;
 }
 
 .account-tab {
@@ -104,13 +121,10 @@
   flex-shrink: 0;
 }
 
-.avatar-onedrive {
-  background: var(--boreal);
-}
-
-.avatar-dropbox {
-  background: var(--dusk);
-}
+/* Per-provider avatar colours */
+.avatar-google   { background: var(--glacial); color: #0e0e14; }
+.avatar-onedrive { background: var(--boreal); }
+.avatar-dropbox  { background: var(--aurora); }
 
 .account-info {
   flex: 1;

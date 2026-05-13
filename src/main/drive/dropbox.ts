@@ -23,8 +23,7 @@ async function dropboxPost(
       url: `https://api.dropboxapi.com/2/${endpoint}`,
       headers: {
         'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(bodyStr).toString()
+        'Content-Type': 'application/json'
       }
     })
 
@@ -40,7 +39,7 @@ async function dropboxPost(
           }
           resolve(data)
         } catch {
-          reject(new Error('Failed to parse Dropbox API response'))
+          reject(new Error(`Dropbox API response (status ${response.statusCode}): ${responseBody.slice(0, 200)}`))
         }
       })
     })

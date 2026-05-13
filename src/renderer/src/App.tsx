@@ -200,33 +200,38 @@ function App(): JSX.Element {
         </div>
 
         <div className="account-list">
-          {accounts.map((account) => (
-            <div
-              key={account.id}
-              className={`account-tab ${account.id === activeAccountId && !isSearching ? 'active' : ''}`}
-              onClick={() => { setSearchQuery(''); setActiveAccountId(account.id) }}
-            >
-              <div className={`account-avatar ${account.provider === 'onedrive' ? 'avatar-onedrive' : account.provider === 'dropbox' ? 'avatar-dropbox' : ''}`}>
-                {account.displayName[0].toUpperCase()}
+          {(['google', 'onedrive', 'dropbox'] as const).map((provider) => {
+            const group = accounts.filter((a) => a.provider === provider)
+            if (group.length === 0) return null
+            const label = provider === 'google' ? 'Google Drive' : provider === 'onedrive' ? 'OneDrive' : 'Dropbox'
+            return (
+              <div key={provider} className="account-group">
+                <div className="account-group-label">{label}</div>
+                {group.map((account) => (
+                  <div
+                    key={account.id}
+                    className={`account-tab ${account.id === activeAccountId && !isSearching ? 'active' : ''}`}
+                    onClick={() => { setSearchQuery(''); setActiveAccountId(account.id) }}
+                  >
+                    <div className={`account-avatar avatar-${provider}`}>
+                      {account.displayName[0].toUpperCase()}
+                    </div>
+                    <div className="account-info">
+                      <div className="account-name">{account.displayName}</div>
+                      <div className="account-email">{account.email}</div>
+                    </div>
+                    <button
+                      className="disconnect-btn"
+                      onClick={(e) => { e.stopPropagation(); handleDisconnect(account) }}
+                      title="Disconnect account"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
               </div>
-              <div className="account-info">
-                <div className="account-name">
-                  {account.displayName}
-                  <span className={`provider-badge ${account.provider === 'onedrive' ? 'badge-onedrive' : account.provider === 'dropbox' ? 'badge-dropbox' : 'badge-google'}`}>
-                    {account.provider === 'onedrive' ? 'OneDrive' : account.provider === 'dropbox' ? 'Dropbox' : 'Drive'}
-                  </span>
-                </div>
-                <div className="account-email">{account.email}</div>
-              </div>
-              <button
-                className="disconnect-btn"
-                onClick={(e) => { e.stopPropagation(); handleDisconnect(account) }}
-                title="Disconnect account"
-              >
-                ×
-              </button>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
         <div className="connect-buttons">
