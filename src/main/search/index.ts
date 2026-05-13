@@ -1,6 +1,7 @@
 import { google } from 'googleapis'
 import { getAuthenticatedClient } from '../auth/google'
 import { searchFiles as searchOneDrive } from '../drive/onedrive'
+import { searchFiles as searchDropbox } from '../drive/dropbox'
 import { getAccounts } from '../accounts'
 
 export interface SearchResult {
@@ -49,6 +50,21 @@ async function searchGoogleAccount(
   }))
 }
 
+async function searchDropboxAccount(
+  accountId: string,
+  accountEmail: string,
+  accountName: string,
+  query: string
+): Promise<SearchResult[]> {
+  const files = await searchDropbox(accountId, query)
+  return files.map((f) => ({
+    ...f,
+    accountId,
+    accountEmail,
+    accountName
+  }))
+}
+
 async function searchOneDriveAccount(
   accountId: string,
   accountEmail: string,
@@ -75,6 +91,9 @@ export async function searchAllAccounts(query: string): Promise<SearchResult[]> 
   const searches = accounts.map((a) => {
     if (a.provider === 'onedrive') {
       return searchOneDriveAccount(a.id, a.email, a.displayName, query)
+    }
+    if (a.provider === 'dropbox') {
+      return searchDropboxAccount(a.id, a.email, a.displayName, query)
     }
     return searchGoogleAccount(a.id, a.email, a.displayName, query)
   })

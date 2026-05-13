@@ -108,6 +108,10 @@
   background: var(--boreal);
 }
 
+.avatar-dropbox {
+  background: var(--dusk);
+}
+
 .account-info {
   flex: 1;
   overflow: hidden;
@@ -170,6 +174,16 @@
 .badge-onedrive {
   background: rgba(91,141,217,0.15);
   color: var(--boreal);
+}
+
+.badge-dropbox {
+  background: rgba(139,111,212,0.15);
+  color: var(--dusk);
+}
+
+/* Dropbox connect button — aurora gradient, consistent with others */
+.connect-btn-dropbox {
+  background: var(--gradient-bar);
 }
 
 /* Connect buttons */

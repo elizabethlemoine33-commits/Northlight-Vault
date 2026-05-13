@@ -2,9 +2,11 @@ import { app, BrowserWindow, shell, ipcMain, Menu } from 'electron'
 import { join } from 'path'
 import { signInWithGoogle, signOutGoogle } from './auth/google'
 import { signInWithMicrosoft, signOutMicrosoft } from './auth/microsoft'
+import { signInWithDropbox, signOutDropbox } from './auth/dropbox'
 import { getAccounts, addAccount, removeAccount } from './accounts'
 import { listFiles as listGoogleFiles } from './drive/google'
 import { listFiles as listOneDriveFiles } from './drive/onedrive'
+import { listFiles as listDropboxFiles } from './drive/dropbox'
 import { searchAllAccounts } from './search'
 import { checkForUpdates } from './utils/updateChecker'
 
@@ -77,10 +79,22 @@ ipcMain.handle('accounts:disconnect-onedrive', async (_event, accountId: string)
   removeAccount(accountId)
 })
 
+ipcMain.handle('accounts:connect-dropbox', async () => {
+  const account = await signInWithDropbox()
+  addAccount(account)
+  return account
+})
+
+ipcMain.handle('accounts:disconnect-dropbox', async (_event, accountId: string) => {
+  await signOutDropbox(accountId)
+  removeAccount(accountId)
+})
+
 ipcMain.handle('drive:listFiles', async (_event, accountId: string, folderId: string) => {
   const account = getAccounts().find((a) => a.id === accountId)
   if (!account) throw new Error(`Account not found: ${accountId}`)
   if (account.provider === 'onedrive') return listOneDriveFiles(accountId, folderId)
+  if (account.provider === 'dropbox') return listDropboxFiles(accountId, folderId)
   return listGoogleFiles(accountId, folderId)
 })
 

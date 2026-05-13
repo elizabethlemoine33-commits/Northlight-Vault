@@ -18,6 +18,12 @@ contextBridge.exposeInMainWorld('api', {
   // Removes a OneDrive account's tokens and clears it from the list
   disconnectOneDrive: (accountId: string) => ipcRenderer.invoke('accounts:disconnect-onedrive', accountId),
 
+  // Opens Dropbox sign-in browser window; returns the new Dropbox account on success
+  connectDropbox: () => ipcRenderer.invoke('accounts:connect-dropbox'),
+
+  // Removes a Dropbox account's tokens and clears it from the list
+  disconnectDropbox: (accountId: string) => ipcRenderer.invoke('accounts:disconnect-dropbox', accountId),
+
   // Lists files/folders inside a folder ('root' = the account's root)
   // Works for both Google Drive and OneDrive — the backend detects the provider automatically
   listFiles: (accountId: string, folderId: string) =>

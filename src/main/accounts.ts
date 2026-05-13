@@ -1,9 +1,9 @@
 import Store from 'electron-store'
 import type { GoogleAccount } from './auth/google'
 import type { MicrosoftAccount } from './auth/microsoft'
+import type { DropboxAccount } from './auth/dropbox'
 
-// Account can be either a Google Drive or OneDrive account
-export type Account = GoogleAccount | MicrosoftAccount
+export type Account = GoogleAccount | MicrosoftAccount | DropboxAccount
 
 const store = new Store<{ accounts: Account[] }>({
   defaults: { accounts: [] }

@@ -8,7 +8,7 @@ interface Account {
   id: string
   email: string
   displayName: string
-  provider: 'google' | 'onedrive'
+  provider: 'google' | 'onedrive' | 'dropbox'
 }
 
 interface SearchResult {
@@ -31,6 +31,8 @@ declare global {
       disconnectAccount: (accountId: string) => Promise<void>
       connectOneDrive: () => Promise<Account>
       disconnectOneDrive: (accountId: string) => Promise<void>
+      connectDropbox: () => Promise<Account>
+      disconnectDropbox: (accountId: string) => Promise<void>
       listFiles: (accountId: string, folderId: string) => Promise<unknown[]>
       searchFiles: (query: string) => Promise<SearchResult[]>
       openFile: (url: string) => Promise<void>
@@ -45,6 +47,7 @@ function App(): JSX.Element {
   const [activeAccountId, setActiveAccountId] = useState<string | null>(null)
   const [connectingGoogle, setConnectingGoogle] = useState(false)
   const [connectingOneDrive, setConnectingOneDrive] = useState(false)
+  const [connectingDropbox, setConnectingDropbox] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [refreshKey, setRefreshKey] = useState(0)
   const [refreshing, setRefreshing] = useState(false)
@@ -150,9 +153,28 @@ function App(): JSX.Element {
     }
   }
 
+  async function handleConnectDropbox() {
+    setConnectingDropbox(true)
+    setError(null)
+    try {
+      const account = await window.api.connectDropbox()
+      setAccounts((prev) => {
+        const exists = prev.find((a) => a.id === account.id)
+        return exists ? prev.map((a) => (a.id === account.id ? account : a)) : [...prev, account]
+      })
+      setActiveAccountId(account.id)
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Dropbox sign-in failed. Please try again.')
+    } finally {
+      setConnectingDropbox(false)
+    }
+  }
+
   async function handleDisconnect(account: Account) {
     if (account.provider === 'onedrive') {
       await window.api.disconnectOneDrive(account.id)
+    } else if (account.provider === 'dropbox') {
+      await window.api.disconnectDropbox(account.id)
     } else {
       await window.api.disconnectAccount(account.id)
     }
@@ -184,14 +206,14 @@ function App(): JSX.Element {
               className={`account-tab ${account.id === activeAccountId && !isSearching ? 'active' : ''}`}
               onClick={() => { setSearchQuery(''); setActiveAccountId(account.id) }}
             >
-              <div className={`account-avatar ${account.provider === 'onedrive' ? 'avatar-onedrive' : ''}`}>
+              <div className={`account-avatar ${account.provider === 'onedrive' ? 'avatar-onedrive' : account.provider === 'dropbox' ? 'avatar-dropbox' : ''}`}>
                 {account.displayName[0].toUpperCase()}
               </div>
               <div className="account-info">
                 <div className="account-name">
                   {account.displayName}
-                  <span className={`provider-badge ${account.provider === 'onedrive' ? 'badge-onedrive' : 'badge-google'}`}>
-                    {account.provider === 'onedrive' ? 'OneDrive' : 'Drive'}
+                  <span className={`provider-badge ${account.provider === 'onedrive' ? 'badge-onedrive' : account.provider === 'dropbox' ? 'badge-dropbox' : 'badge-google'}`}>
+                    {account.provider === 'onedrive' ? 'OneDrive' : account.provider === 'dropbox' ? 'Dropbox' : 'Drive'}
                   </span>
                 </div>
                 <div className="account-email">{account.email}</div>
@@ -213,6 +235,9 @@ function App(): JSX.Element {
           </button>
           <button className="connect-btn connect-btn-onedrive" onClick={handleConnectOneDrive} disabled={connectingOneDrive}>
             {connectingOneDrive ? 'Signing in…' : '+ Connect OneDrive'}
+          </button>
+          <button className="connect-btn connect-btn-dropbox" onClick={handleConnectDropbox} disabled={connectingDropbox}>
+            {connectingDropbox ? 'Signing in…' : '+ Connect Dropbox'}
           </button>
         </div>
 

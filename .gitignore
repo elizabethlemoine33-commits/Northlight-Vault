@@ -13,6 +13,7 @@ release/
 client_secret*.json
 resources/google-credentials.json
 resources/azure-credentials.json
+resources/dropbox-credentials.json
 
 # Build output
 out/

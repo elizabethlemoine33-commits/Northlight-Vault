@@ -24,6 +24,7 @@
   "dependencies": {
     "@azure/msal-node": "^5.2.0",
     "@microsoft/microsoft-graph-client": "^3.0.7",
+    "dropbox": "^10.34.0",
     "electron-store": "^8.2.0",
     "googleapis": "^140.0.0",
     "keytar": "^7.9.0",
@@ -53,6 +54,10 @@
       {
         "from": "CHANGELOG.md",
         "to": "CHANGELOG.md"
+      },
+      {
+        "from": "resources/dropbox-credentials.json",
+        "to": "dropbox-credentials.json"
       }
     ],
     "win": {
