@@ -115,12 +115,25 @@ npm run typecheck # Check TypeScript without building
 | Phase 8 — Microsoft OneDrive | ✅ Complete |
 | Phase 9 — Northlight Vault Brand | ✅ Complete |
 
-**v2.0 shipped** — installer at `release/Northlight Vault Setup 0.1.0.exe`
+**v1.0.0 shipped** — all phases complete
 
-## v2.1 Backlog
-- Add/test additional Google accounts
-- Rate limit / retry handling
+## v1.0.0 Features (Sprint 2 — 2026-05-13)
+- Version 1.0.0 (SemVer established)
+- CHANGELOG.md + Help menu (View Changelog, Check for Updates)
+- Refresh button in search bar
+- Update checker via GitHub releases API
+- Dropbox integration — OAuth 2.0 PKCE, file listing, folder nav, search
+- Sidebar provider dividers (Google Drive / OneDrive / Dropbox)
+- Per-provider avatar colours (teal / blue / pink)
+- Official app icon from northlight-vault-icon-512x512.png
+- Sidebar wordmark image (northlight-vault-sidebar-520x106.png)
+- GitHub remote: github.com/elizabethlemoine33-commits/Northlight-Vault
+
+## Backlog
+- Wordmark: re-export with transparent background when available
 - Token expiry re-auth prompt
+- Rate limit / retry handling for Drive/OneDrive/Dropbox APIs
+- Add/test additional Google accounts
 
 ---
 
