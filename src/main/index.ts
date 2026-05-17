@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/electron/main'
 
 Sentry.init({
-  dsn: process.env.VITE_SENTRY_DSN,
+  dsn: import.meta.env.VITE_SENTRY_DSN,
   tracesSampleRate: 0
 })
 
@@ -118,6 +118,7 @@ ipcMain.handle('app:checkForUpdates', async () => {
 })
 
 ipcMain.handle('app:getVersion', () => app.getVersion())
+
 
 ipcMain.handle('notifications:get', () => getActiveNotifications())
 
