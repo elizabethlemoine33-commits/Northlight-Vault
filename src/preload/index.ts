@@ -38,9 +38,24 @@ contextBridge.exposeInMainWorld('api', {
   // Queries GitHub releases API to check if a newer version of the app is available
   checkForUpdates: () => ipcRenderer.invoke('app:checkForUpdates'),
 
+  // Returns the current app version from package.json
+  getVersion: () => ipcRenderer.invoke('app:getVersion'),
+
   // Listen for the Help menu "Check for Updates" click (triggered by native menu)
   onMenuCheckForUpdates: (callback: () => void) => {
     ipcRenderer.on('menu:check-for-updates', callback)
     return () => ipcRenderer.removeListener('menu:check-for-updates', callback)
-  }
+  },
+
+  // Listen for the Help menu "About Northlight Vault…" click (triggered by native menu)
+  onMenuShowAbout: (callback: () => void) => {
+    ipcRenderer.on('menu:show-about', callback)
+    return () => ipcRenderer.removeListener('menu:show-about', callback)
+  },
+
+  // Returns notifications that have not yet been dismissed by the user
+  getNotifications: () => ipcRenderer.invoke('notifications:get'),
+
+  // Marks a notification as dismissed — it will not appear again after app restart
+  dismissNotification: (id: string) => ipcRenderer.invoke('notifications:dismiss', id)
 })

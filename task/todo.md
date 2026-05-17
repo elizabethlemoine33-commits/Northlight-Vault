@@ -478,3 +478,80 @@
 - User will set up Google and Microsoft developer accounts manually (guided step by step)
 - App is for personal use on one Windows 11 machine (not distributed publicly)
 - Read-only access for v1 (no upload, edit, or delete)
+
+---
+
+## Session — May 17, 2026 (v1.0.0 Post-Ship Tasks)
+
+**Task order:** Task 10 → Task 4 → Task 8 → Task 5 → Task 1 → Task 2 → Task 9 → Task 7
+
+---
+
+### Task 10 — Update Support Email / App ID
+- [x] Search entire project for `elizabethlemoine33@gmail.com` — not found in any source file
+- [x] Search for `elizabeth@bynorthlight.ca` — not found
+- [x] Update `appId` in `package.json`: `com.elizabethlemoine.northlightvault` → `com.bynorthlight.northlightvault`
+
+---
+
+### Task 4 — About Section ✅
+- [x] Add IPC handler `app:getVersion` in `src/main/index.ts` — returns `app.getVersion()`
+- [x] Expose `getVersion()` in `src/preload/index.ts`
+- [x] Create `src/renderer/src/components/AboutModal.tsx` with all required content
+- [x] Create `src/renderer/src/components/AboutModal.css` — brand-matched styling
+- [x] Wire "About Northlight Vault…" into Help menu in `src/main/index.ts`
+- [x] Add trigger in `src/renderer/src/App.tsx` to show/hide the modal
+- [x] Updated `file:open` handler to allow `mailto:` in addition to `https://`
+- [x] Test: modal opens, version 1.0.0 displays correctly, all links work
+
+---
+
+### Task 8 — In-App Notification System ✅
+- [x] Confirmed: dismissed state stored in electron-store
+- [x] Created `src/main/notifications.ts` — notifications defined in one place, easy to add future ones
+- [x] Added IPC handlers `notifications:get` and `notifications:dismiss` in `src/main/index.ts`
+- [x] Exposed `getNotifications()` and `dismissNotification()` in `src/preload/index.ts`
+- [x] Created `src/renderer/src/components/NotificationBanner.tsx`
+- [x] Created `src/renderer/src/components/NotificationBanner.css` — solid glacial banner, dark text, circular dismiss button
+- [x] Wired into `App.tsx`
+- [x] Test: banner shows, dismisses on ×, does not reappear after restart
+
+---
+
+### Task 5 — Sentry Crash Reporting ✅
+- [x] Installed `@sentry/electron` — 0 vulnerabilities
+- [x] Created `.env` with `VITE_SENTRY_DSN` — confirmed gitignored
+- [x] Initialised Sentry in `src/main/index.ts` — first lines of file, before app loads
+- [x] Initialised Sentry in `src/renderer/src/main.tsx` — before React mounts
+- [x] Native crash reporting (minidump capture) enabled automatically by SDK
+- [x] `tracesSampleRate: 0` — no performance tracing
+- [x] TypeScript typecheck: 0 errors
+- [x] DSN loaded from `process.env` / `import.meta.env` — never hardcoded in source
+
+---
+
+### Task 1 — Privacy Policy ✅
+- [x] Used Elizabeth's existing policy — updated date to May 17, 2026, stripped implementation notes
+- [x] Saved as `PRIVACY_POLICY.md` in project root
+- [x] Sentry section already accurate in existing policy — no changes needed
+
+---
+
+### Task 2 — Package as .exe via GitHub Releases ✅
+- [x] `electron-builder` config confirmed correct in `package.json`
+- [x] Windows NSIS target confirmed, `resources/icon.ico` present
+- [x] `npm run dist` run successfully — `release\Northlight Vault Setup 1.0.0.exe` produced
+- [x] Build command: `npm run dist` from project root
+
+---
+
+### Task 9 — Finalise README ✅
+- [x] Created `README.md` in project root (no prior file existed)
+- [x] Correct app name throughout (Northlight Vault)
+- [x] Includes: one-liner, description, providers, limitations, install steps, account connection, privacy link, support email, feedback form, version, copyright
+
+---
+
+### Task 7 — Website Copy Block ✅
+- [x] Created `copy/` folder in project root
+- [x] Written `copy/website-apps-copy.md` — apps section copy for bynorthlight.ca

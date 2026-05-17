@@ -4,6 +4,8 @@ import wordmark from './assets/northlight-vault-browser.png'
 import { FileList } from './components/FileList'
 import { SearchResults } from './components/SearchResults'
 import { UpdateModal } from './components/UpdateModal'
+import { AboutModal } from './components/AboutModal'
+import { NotificationBanner } from './components/NotificationBanner'
 
 interface Account {
   id: string
@@ -38,7 +40,11 @@ declare global {
       searchFiles: (query: string) => Promise<SearchResult[]>
       openFile: (url: string) => Promise<void>
       checkForUpdates: () => Promise<unknown>
+      getVersion: () => Promise<string>
       onMenuCheckForUpdates: (callback: () => void) => () => void
+      onMenuShowAbout: (callback: () => void) => () => void
+      getNotifications: () => Promise<{ id: string; message: string; type: 'info' | 'warning' }[]>
+      dismissNotification: (id: string) => Promise<void>
     }
   }
 }
@@ -53,6 +59,7 @@ function App(): JSX.Element {
   const [refreshKey, setRefreshKey] = useState(0)
   const [refreshing, setRefreshing] = useState(false)
   const [showUpdateModal, setShowUpdateModal] = useState(false)
+  const [showAboutModal, setShowAboutModal] = useState(false)
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('')
@@ -71,6 +78,11 @@ function App(): JSX.Element {
 
   useEffect(() => {
     const remove = window.api.onMenuCheckForUpdates(() => setShowUpdateModal(true))
+    return remove
+  }, [])
+
+  useEffect(() => {
+    const remove = window.api.onMenuShowAbout(() => setShowAboutModal(true))
     return remove
   }, [])
 
@@ -192,6 +204,7 @@ function App(): JSX.Element {
   return (
     <div className="app">
       {showUpdateModal && <UpdateModal onClose={() => setShowUpdateModal(false)} />}
+      {showAboutModal && <AboutModal onClose={() => setShowAboutModal(false)} />}
       <header className="sidebar">
         <div className="sidebar-gradient-bar" />
         <div className="sidebar-inner">
@@ -255,6 +268,7 @@ function App(): JSX.Element {
       </header>
 
       <main className="content">
+        <NotificationBanner />
         {/* Search bar — always visible at the top when accounts are connected */}
         {accounts.length > 0 && (
           <div className="search-bar-container">

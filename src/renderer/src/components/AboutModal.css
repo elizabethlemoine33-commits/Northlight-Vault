@@ -1,0 +1,101 @@
+.about-modal-box {
+  width: 460px;
+}
+
+.about-body {
+  gap: 16px;
+}
+
+.about-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.about-app-name {
+  font-family: 'Jost', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  background: var(--gradient-bar);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+
+.about-descriptor {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.about-version {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  color: var(--dim);
+  margin-top: 4px;
+}
+
+.about-description {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.about-built-by {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  color: var(--dim);
+  margin: 0;
+}
+
+.about-links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.about-link-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.about-link-label {
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dim);
+  width: 100px;
+  flex-shrink: 0;
+}
+
+.about-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  color: var(--glacial);
+  cursor: pointer;
+  text-align: left;
+}
+
+.about-link:hover {
+  color: var(--birch);
+  text-decoration: underline;
+}
+
+.about-copyright {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  color: var(--dim);
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}

@@ -1,3 +1,10 @@
+import * as Sentry from '@sentry/electron/main'
+
+Sentry.init({
+  dsn: process.env.VITE_SENTRY_DSN,
+  tracesSampleRate: 0
+})
+
 import { app, BrowserWindow, shell, ipcMain, Menu } from 'electron'
 import { join } from 'path'
 import { signInWithGoogle, signOutGoogle } from './auth/google'
@@ -9,6 +16,7 @@ import { listFiles as listOneDriveFiles } from './drive/onedrive'
 import { listFiles as listDropboxFiles } from './drive/dropbox'
 import { searchAllAccounts } from './search'
 import { checkForUpdates } from './utils/updateChecker'
+import { getActiveNotifications, dismissNotification } from './notifications'
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -109,9 +117,15 @@ ipcMain.handle('app:checkForUpdates', async () => {
   return checkForUpdates()
 })
 
+ipcMain.handle('app:getVersion', () => app.getVersion())
+
+ipcMain.handle('notifications:get', () => getActiveNotifications())
+
+ipcMain.handle('notifications:dismiss', (_event, id: string) => dismissNotification(id))
+
 ipcMain.handle('file:open', async (_event, url: string) => {
-  // Only open https:// URLs — never file paths or other protocols
-  if (typeof url === 'string' && url.startsWith('https://')) {
+  // Only open https:// URLs or mailto: links — never file paths or other protocols
+  if (typeof url === 'string' && (url.startsWith('https://') || url.startsWith('mailto:'))) {
     await shell.openExternal(url)
   }
 })
@@ -134,6 +148,13 @@ function buildAppMenu(): void {
           click: () => {
             const win = BrowserWindow.getAllWindows()[0]
             if (win) win.webContents.send('menu:check-for-updates')
+          }
+        },
+        {
+          label: 'About Northlight Vault…',
+          click: () => {
+            const win = BrowserWindow.getAllWindows()[0]
+            if (win) win.webContents.send('menu:show-about')
           }
         },
         { type: 'separator' },

@@ -1,0 +1,50 @@
+.notification-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.notification-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 16px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.notification-info {
+  background: var(--glacial);
+  color: var(--midnight);
+}
+
+.notification-warning {
+  background: var(--aurora);
+  color: var(--midnight);
+}
+
+.notification-message {
+  flex: 1;
+}
+
+.notification-dismiss {
+  background: rgba(14, 14, 20, 0.15);
+  border: 1px solid rgba(14, 14, 20, 0.25);
+  border-radius: 50%;
+  color: var(--midnight);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.notification-dismiss:hover {
+  background: rgba(14, 14, 20, 0.3);
+}

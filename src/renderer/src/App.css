@@ -29,17 +29,17 @@
   flex-direction: column;
   flex: 1;
   gap: 12px;
-  padding: 16px 12px;
+  padding: 4px 12px 12px;
   overflow: hidden;
 }
 
 /* Brand lockup */
 .sidebar-brand {
-  padding: 4px 4px 2px;
+  padding: 0 2px 2px;
 }
 
 .sidebar-wordmark {
-  width: 100%;
+  width: 236px;
   height: auto;
   display: block;
 }
