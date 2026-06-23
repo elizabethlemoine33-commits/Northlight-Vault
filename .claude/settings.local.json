@@ -1,9 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "PowerShell(Stop-Process -Name \"node\" -ErrorAction SilentlyContinue)",
-      "PowerShell($env:PATH += \";C:\\\\Program Files\\\\nodejs\"; cd \"C:\\\\Users\\\\erand\\\\OneDrive\\\\Desktop\\\\Claude Code\"; npm install 2>&1)",
-      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\erand\\\\OneDrive\\\\Desktop\\\\Claude Code\\\\release\\\\\" | Select-Object Name, @{N='Size';E={[math]::Round\\($_.Length/1MB,1\\).ToString\\(\\)+\" MB\"}})"
-    ]
-  }
-}
