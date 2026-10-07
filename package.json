@@ -63,6 +63,7 @@
     ],
     "win": {
       "target": "nsis",
+      "artifactName": "Northlight.Vault.Setup.${ext}",
       "icon": "resources/icon.ico"
     },
     "nsis": {
