@@ -8,6 +8,10 @@ Format: [Keep a Changelog](https://keepachangelog.com) · Versioning: [SemVer](h
 ## [Unreleased]
 <!-- Work in progress — moved to a versioned section when shipped -->
 
+### Added
+- **Feedback announcement** — dismissible banner on the landing screen inviting early feedback, with a "Share feedback" button that opens the feedback form; dismissal is remembered across restarts
+- **Send Feedback… menu item** — permanent Help menu entry that opens the feedback form in the system browser
+
 ---
 
 ## [1.0.0] — 2026-05-13
