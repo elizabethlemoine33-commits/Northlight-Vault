@@ -1,6 +1,6 @@
 {
   "name": "northlight-vault",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Northlight Vault — multi-account cloud file browser for Windows",
   "main": "out/main/index.js",
   "scripts": {
@@ -63,6 +63,7 @@
     ],
     "win": {
       "target": "nsis",
+      "artifactName": "Northlight.Vault.Setup.${ext}",
       "icon": "resources/icon.ico"
     },
     "nsis": {

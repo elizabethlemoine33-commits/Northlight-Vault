@@ -43,7 +43,9 @@ declare global {
       getVersion: () => Promise<string>
       onMenuCheckForUpdates: (callback: () => void) => () => void
       onMenuShowAbout: (callback: () => void) => () => void
-      getNotifications: () => Promise<{ id: string; message: string; type: 'info' | 'warning' }[]>
+      getNotifications: () => Promise<
+        { id: string; message: string; type: 'info' | 'warning'; linkLabel?: string; linkUrl?: string }[]
+      >
       dismissNotification: (id: string) => Promise<void>
     }
   }

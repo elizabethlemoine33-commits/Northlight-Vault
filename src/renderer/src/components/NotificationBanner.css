@@ -29,6 +29,25 @@
   flex: 1;
 }
 
+.notification-link {
+  background: rgba(14, 14, 20, 0.15);
+  border: 1px solid rgba(14, 14, 20, 0.25);
+  border-radius: 4px;
+  color: var(--midnight);
+  font-family: 'Jost', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1;
+  padding: 5px 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.notification-link:hover {
+  background: rgba(14, 14, 20, 0.3);
+}
+
 .notification-dismiss {
   background: rgba(14, 14, 20, 0.15);
   border: 1px solid rgba(14, 14, 20, 0.25);

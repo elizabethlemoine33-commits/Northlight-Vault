@@ -16,7 +16,7 @@ import { listFiles as listOneDriveFiles } from './drive/onedrive'
 import { listFiles as listDropboxFiles } from './drive/dropbox'
 import { searchAllAccounts } from './search'
 import { checkForUpdates } from './utils/updateChecker'
-import { getActiveNotifications, dismissNotification } from './notifications'
+import { getActiveNotifications, dismissNotification, FEEDBACK_FORM_URL } from './notifications'
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -150,6 +150,10 @@ function buildAppMenu(): void {
             const win = BrowserWindow.getAllWindows()[0]
             if (win) win.webContents.send('menu:check-for-updates')
           }
+        },
+        {
+          label: 'Send Feedback…',
+          click: () => shell.openExternal(FEEDBACK_FORM_URL)
         },
         {
           label: 'About Northlight Vault…',
