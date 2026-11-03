@@ -1,4 +1,5 @@
 import Store from 'electron-store'
+import { app } from 'electron'
 import { checkForUpdates } from './utils/updateChecker'
 
 // The Northlight Vault feedback form (ClickUp Form → User Feedback list).
@@ -21,7 +22,8 @@ export interface AppNotification {
 const ALL_NOTIFICATIONS: AppNotification[] = [
   {
     id: 'welcome-v1b',
-    message: 'Welcome to Northlight Vault v1.0.0. Thanks for trying the early release — feedback is appreciated.',
+    // Version is read from the running app so the banner is never out of date
+    message: `Welcome to Northlight Vault v${app.getVersion()}. Thanks for trying it. Feedback is appreciated.`,
     type: 'info'
   },
   {
