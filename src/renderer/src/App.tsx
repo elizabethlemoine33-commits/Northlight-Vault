@@ -46,6 +46,9 @@ declare global {
       getNotifications: () => Promise<
         { id: string; message: string; type: 'info' | 'warning'; linkLabel?: string; linkUrl?: string }[]
       >
+      getUpdateNotification: () => Promise<
+        { id: string; message: string; type: 'info' | 'warning'; linkLabel?: string; linkUrl?: string } | null
+      >
       dismissNotification: (id: string) => Promise<void>
     }
   }

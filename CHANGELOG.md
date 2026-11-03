@@ -11,6 +11,17 @@ Format: [Keep a Changelog](https://keepachangelog.com) · Versioning: [SemVer](h
 
 ---
 
+## [1.0.2] — 2026-11-02
+
+### Added
+- **Update banner** — Vault now checks GitHub for a newer release each time it starts and shows a banner with a link to the download. Dismissing it hides that version only. If the check fails, nothing is shown.
+- **Review on G2 banner** — a second, equal banner beside the feedback request, plus a Help menu item. Shown to every user the same way.
+
+### Changed
+- Privacy policy wording about update checks now matches the app (a check on launch, and on request from the Help menu).
+
+---
+
 ## [1.0.1] — 2026-10-07
 
 ### Added

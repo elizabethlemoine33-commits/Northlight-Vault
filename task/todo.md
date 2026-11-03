@@ -555,3 +555,13 @@
 ### Task 7 — Website Copy Block ✅
 - [x] Created `copy/` folder in project root
 - [x] Written `copy/website-apps-copy.md` — apps section copy for bynorthlight.ca
+
+---
+
+## v1.0.2 — Review on G2 banner and startup update banner (approved by Elizabeth in chat, 2 Nov 2026)
+- [x] Add `g2-review-v1` banner and Help menu item "Review Northlight Vault on G2…" (`src/main/notifications.ts`, `src/main/index.ts`)
+- [x] Add startup update check that returns a dismissible banner per version (`getUpdateNotification`, IPC `notifications:getUpdate`, preload, `NotificationBanner.tsx`, `App.tsx` types)
+- [x] Bump version to 1.0.2, CHANGELOG entry
+- [x] Privacy policy section 7 wording: update check runs on launch and on request
+- [x] Typecheck: same 4 errors as master before this change (import.meta.env types, missing banner png, FileList), none new. Full build and packaged-app test not run: Node is not installed on this machine
+- [ ] Open PR. Release (npm run dist, GitHub release, site privacy page) waits for Elizabeth
