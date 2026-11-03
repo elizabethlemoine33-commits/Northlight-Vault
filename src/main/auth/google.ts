@@ -9,7 +9,8 @@ import * as url from 'url'
 const KEYTAR_SERVICE = 'cloud-file-browser'
 
 const SCOPES = [
-  'https://www.googleapis.com/auth/drive.readonly',
+  // Metadata only: file names, folders, dates and links. Vault never reads file contents (files open in the browser).
+  'https://www.googleapis.com/auth/drive.metadata.readonly',
   'https://www.googleapis.com/auth/userinfo.email',
   'https://www.googleapis.com/auth/userinfo.profile'
 ]

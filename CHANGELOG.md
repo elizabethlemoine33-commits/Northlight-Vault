@@ -11,6 +11,13 @@ Format: [Keep a Changelog](https://keepachangelog.com) · Versioning: [SemVer](h
 
 ---
 
+## [1.0.3] — 2026-11-03
+
+### Changed
+- **Smaller Google Drive permission.** Vault now asks Google only to see file names, folders, dates and links (`drive.metadata.readonly`), not to read file contents (`drive.readonly`). Browsing, searching by file name and opening files work the same, because files open in your browser through their link. Accounts already connected keep working. Disconnect and reconnect a Google account to see the smaller permission on Google's consent screen.
+
+---
+
 ## [1.0.2] — 2026-11-02
 
 ### Added
