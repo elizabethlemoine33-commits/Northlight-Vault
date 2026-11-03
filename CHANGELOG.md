@@ -13,6 +13,9 @@ Format: [Keep a Changelog](https://keepachangelog.com) · Versioning: [SemVer](h
 
 ## [1.0.3] — 2026-11-03
 
+### Changed (sign-in)
+- **Google sign-in now opens in your normal browser** instead of a small window inside Vault. This is what Google requires of desktop apps, and it lets you use the Google accounts you are already signed in to. Microsoft and Dropbox sign-in are unchanged.
+
 ### Fixed
 - The welcome banner on a fresh install said v1.0.0. It now shows the version you are running.
 

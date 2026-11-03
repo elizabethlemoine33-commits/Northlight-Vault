@@ -1,4 +1,4 @@
-import { BrowserWindow, app } from 'electron'
+import { app, shell } from 'electron'
 import { google } from 'googleapis'
 import * as keytar from 'keytar'
 import * as fs from 'fs'
@@ -28,13 +28,20 @@ function loadCredentials(): { client_id: string; client_secret: string } {
   return { client_id: creds.client_id, client_secret: creds.client_secret }
 }
 
-// Opens a Google sign-in window and returns the auth code + the port used,
-// so the token exchange step can use the exact same redirect URI.
+// Opens Google's sign-in page in the user's default browser (Google requires installed apps to use a
+// real browser, not an embedded window) and returns the auth code + the port used, so the token
+// exchange step can use the exact same redirect URI.
 async function getAuthCodeViaWindow(): Promise<{ code: string; port: number }> {
   const { client_id, client_secret } = loadCredentials()
 
   return new Promise((resolve, reject) => {
     // Create a local server that will catch Google's redirect after sign-in
+    // Give up after 5 minutes if the user never finishes signing in
+    const timeout = setTimeout(() => {
+      server.close()
+      reject(new Error('Sign-in timed out. Please try again.'))
+    }, 5 * 60 * 1000)
+
     const server = http.createServer((req, res) => {
       if (!req.url) return
       const parsed = url.parse(req.url, true)
@@ -42,13 +49,15 @@ async function getAuthCodeViaWindow(): Promise<{ code: string; port: number }> {
       const addr = server.address() as { port: number }
 
       if (code) {
-        res.writeHead(200, { 'Content-Type': 'text/html' })
-        res.end('<h2>Signed in successfully. You can close this window.</h2>')
+        clearTimeout(timeout)
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' })
+        res.end('<h2>Signed in. You can close this tab and return to Northlight Vault.</h2>')
         server.close()
         resolve({ code, port: addr.port })
       } else {
-        res.writeHead(400)
-        res.end('Sign-in error — no code received.')
+        clearTimeout(timeout)
+        res.writeHead(400, { 'Content-Type': 'text/html; charset=utf-8' })
+        res.end('<h2>Sign-in did not finish. You can close this tab and try again in Northlight Vault.</h2>')
         server.close()
         reject(new Error('No auth code in redirect'))
       }
@@ -68,21 +77,11 @@ async function getAuthCodeViaWindow(): Promise<{ code: string; port: number }> {
         prompt: 'select_account'
       })
 
-      // Open the Google sign-in page in a small Electron window
-      const authWindow = new BrowserWindow({
-        width: 500,
-        height: 650,
-        webPreferences: {
-          nodeIntegration: false,
-          contextIsolation: true
-        }
-      })
-
-      authWindow.loadURL(authUrl)
-
-      authWindow.on('closed', () => {
+      // Open the Google sign-in page in the default browser. The redirect lands on the local server above.
+      shell.openExternal(authUrl).catch((err) => {
+        clearTimeout(timeout)
         server.close()
-        reject(new Error('Sign-in window was closed before completing.'))
+        reject(err)
       })
     })
   })
