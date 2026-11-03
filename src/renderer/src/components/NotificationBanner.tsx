@@ -15,6 +15,10 @@ export function NotificationBanner(): JSX.Element | null {
 
   useEffect(() => {
     window.api.getNotifications().then(setNotifications)
+    // Update check runs in the background so it never delays the other banners
+    window.api.getUpdateNotification().then((update) => {
+      if (update) setNotifications((prev) => [update, ...prev])
+    })
   }, [])
 
   async function handleDismiss(id: string) {

@@ -56,6 +56,9 @@ contextBridge.exposeInMainWorld('api', {
   // Returns notifications that have not yet been dismissed by the user
   getNotifications: () => ipcRenderer.invoke('notifications:get'),
 
+  // Checks GitHub for a newer release; resolves to a banner or null (silent on any error)
+  getUpdateNotification: () => ipcRenderer.invoke('notifications:getUpdate'),
+
   // Marks a notification as dismissed — it will not appear again after app restart
   dismissNotification: (id: string) => ipcRenderer.invoke('notifications:dismiss', id)
 })

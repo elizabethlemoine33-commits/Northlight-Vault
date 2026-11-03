@@ -149,7 +149,7 @@ By checking this box and clicking Submit, you explicitly consent to us storing y
 
 **Performance tracing:** Performance tracing is disabled. Sentry only activates when a crash or unhandled error occurs — it does not continuously monitor or transmit data about normal app usage.
 
-**Software updates:** Northlight Vault includes an automatic update check that connects to GitHub to determine whether a newer version is available. This request is made directly between your device and GitHub's servers. Northlight does not log or store connection data from update checks. GitHub's privacy policy applies: https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement
+**Software updates:** Northlight Vault checks GitHub for a newer version each time it starts, and again when you choose Help > Check for Updates. This request is made directly between your device and GitHub's servers. Northlight does not log or store connection data from update checks. GitHub's privacy policy applies: https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement
 
 ---
 

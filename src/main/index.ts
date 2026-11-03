@@ -16,7 +16,13 @@ import { listFiles as listOneDriveFiles } from './drive/onedrive'
 import { listFiles as listDropboxFiles } from './drive/dropbox'
 import { searchAllAccounts } from './search'
 import { checkForUpdates } from './utils/updateChecker'
-import { getActiveNotifications, dismissNotification, FEEDBACK_FORM_URL } from './notifications'
+import {
+  getActiveNotifications,
+  getUpdateNotification,
+  dismissNotification,
+  FEEDBACK_FORM_URL,
+  G2_REVIEW_URL
+} from './notifications'
 
 function createWindow(): void {
   const mainWindow = new BrowserWindow({
@@ -122,6 +128,8 @@ ipcMain.handle('app:getVersion', () => app.getVersion())
 
 ipcMain.handle('notifications:get', () => getActiveNotifications())
 
+ipcMain.handle('notifications:getUpdate', () => getUpdateNotification())
+
 ipcMain.handle('notifications:dismiss', (_event, id: string) => dismissNotification(id))
 
 ipcMain.handle('file:open', async (_event, url: string) => {
@@ -154,6 +162,10 @@ function buildAppMenu(): void {
         {
           label: 'Send Feedback…',
           click: () => shell.openExternal(FEEDBACK_FORM_URL)
+        },
+        {
+          label: 'Review Northlight Vault on G2…',
+          click: () => shell.openExternal(G2_REVIEW_URL)
         },
         {
           label: 'About Northlight Vault…',
