@@ -2,7 +2,12 @@ import * as Sentry from '@sentry/electron/main'
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
-  tracesSampleRate: 0
+  tracesSampleRate: 0,
+  sendDefaultPii: false,
+  // Crash reports must never carry file names, search terms or request addresses. Sentry's default
+  // breadcrumbs record console output and every network request URL (which hold search terms and
+  // folder IDs), so keep only Electron window and app events.
+  beforeBreadcrumb: (breadcrumb) => (breadcrumb.category === 'electron' ? breadcrumb : null)
 })
 
 import { app, BrowserWindow, shell, ipcMain, Menu } from 'electron'
@@ -113,7 +118,6 @@ ipcMain.handle('drive:listFiles', async (_event, accountId: string, folderId: st
 })
 
 ipcMain.handle('search:query', async (_event, query: string) => {
-  console.log('[search] query:', query)
   const results = await searchAllAccounts(query)
   console.log('[search] results count:', results.length)
   return results
