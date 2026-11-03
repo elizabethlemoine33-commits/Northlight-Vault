@@ -13,6 +13,9 @@ Format: [Keep a Changelog](https://keepachangelog.com) · Versioning: [SemVer](h
 
 ## [1.0.3] — 2026-11-03
 
+### Privacy
+- **Crash reports can no longer carry search terms, file names or request addresses.** Sentry's default activity trail (console messages and the address of every web request) is switched off. Only Electron app and window events are kept. Vault also no longer writes your search text to its log.
+
 ### Changed (sign-in)
 - **Google sign-in now opens in your normal browser** instead of a small window inside Vault. This is what Google requires of desktop apps, and it lets you use the Google accounts you are already signed in to. Microsoft and Dropbox sign-in are unchanged.
 
