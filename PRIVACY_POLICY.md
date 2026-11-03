@@ -79,6 +79,8 @@ To provide its core functionality, Northlight Vault connects to cloud storage se
 
 **Your files:** Northlight does not touch your files. Vault is read-only. It cannot move, rename, edit, upload or delete a file, and it does not download or keep copies. When you open a file, it opens in your browser or its own app through your cloud provider. Neither the files nor their contents pass through Northlight.
 
+**Google user data:** If you connect Google Drive, Northlight Vault asks Google for read-only access to information about your files (names, folders, types, sizes, dates and links). It uses this only to show your files and search them by name, on your computer. It does not read the contents of your files, does not store or send Google user data to Northlight or anyone else, does not use it for advertising or to train AI models, and no person at Northlight can see it. Northlight Vault's use and transfer of information received from Google APIs to any other app will adhere to the [Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy), including the Limited Use requirements.
+
 **Your cloud provider's responsibility:** Each provider has its own privacy policy governing how they handle your data. We encourage you to review them:
 
 - Google Drive: https://policies.google.com/privacy
