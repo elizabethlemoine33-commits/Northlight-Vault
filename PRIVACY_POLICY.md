@@ -1,7 +1,8 @@
 # NORTHLIGHT VAULT — PRIVACY POLICY
 
 **Effective Date: May 17, 2026**
-**Last Updated: May 17, 2026**
+**Last Updated: November 3, 2026**
+**Applies to: Northlight Vault v1.0.2 and later**
 
 ---
 
@@ -27,7 +28,9 @@ Canada
 
 ## 2. OUR COMMITMENT TO YOUR PRIVACY
 
-Northlight Vault is designed with privacy as a default. The app does not collect, transmit, or store your personal information on any Northlight servers. Everything stays on your device.
+Northlight Vault is designed with privacy as a default. Northlight does not touch your files. Vault does not download, copy, store or upload them, and nothing about your files or your account is sent to Northlight.
+
+The app does send two kinds of information off your device, and both are explained below: a crash report to Sentry if the app crashes (Section 7), and a request to GitHub to check for a newer version (Section 7). Apart from your connections to your own cloud providers (Section 4), that is all.
 
 This policy explains how the app works with third-party cloud storage providers, what that means for your data, how we handle user feedback, and what rights you have as a Canadian user under the Personal Information Protection and Electronic Documents Act (PIPEDA).
 
@@ -73,6 +76,8 @@ To provide its core functionality, Northlight Vault connects to cloud storage se
 - Dropbox (Dropbox, Inc.)
 
 **How it works:** When you browse files in Vault, the app retrieves file lists and metadata (names, dates, folder structure, file types) directly from your connected cloud provider and displays them on your device. This data is processed locally and is not sent to Northlight or stored on Northlight servers.
+
+**Your files:** Northlight does not touch your files. Vault is read-only. It cannot move, rename, edit, upload or delete a file, and it does not download or keep copies. When you open a file, it opens in your browser or its own app through your cloud provider. Neither the files nor their contents pass through Northlight.
 
 **Your cloud provider's responsibility:** Each provider has its own privacy policy governing how they handle your data. We encourage you to review them:
 
@@ -130,7 +135,7 @@ By checking this box and clicking Submit, you explicitly consent to us storing y
 
 **Analytics:** Northlight Vault does not use analytics tools or collect data about how you use the app.
 
-**Crash reporting (Sentry):** Northlight Vault uses Sentry to capture crash reports when the app encounters a critical error. This is the only data that leaves your device, and it is sent directly to Sentry — not to Northlight.
+**Crash reporting (Sentry):** Northlight Vault uses Sentry to capture crash reports when the app encounters a critical error. Besides the update check below and your connections to your own cloud providers, this is the only data the app sends. It goes directly to Sentry, not to Northlight. Crash reports do not contain your files or their contents.
 
 **What Sentry collects when the app crashes:**
 - Error message and stack trace (the sequence of code that caused the crash)
@@ -141,7 +146,7 @@ By checking this box and clicking Submit, you explicitly consent to us storing y
 
 **What Sentry does not collect:**
 - OAuth tokens or credentials of any kind
-- File names, folder names, or any content from your cloud storage
+- The names or contents of the files and folders in your cloud storage
 - Your search queries or browsing history
 - Your email address or any personally identifying information
 
