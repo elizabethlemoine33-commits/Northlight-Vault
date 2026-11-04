@@ -18,6 +18,11 @@ export interface SearchResult {
 
 const FOLDER_MIME = 'application/vnd.google-apps.folder'
 
+// Results asked for from each account. The renderer filters these, so it needs
+// enough to work with. Keep in step with PER_ACCOUNT_RESULT_LIMIT in
+// src/renderer/src/lib/searchFilters.ts (and the limits in drive/dropbox.ts and drive/onedrive.ts).
+const PER_ACCOUNT_LIMIT = 100
+
 async function searchGoogleAccount(
   accountId: string,
   accountEmail: string,
@@ -33,7 +38,7 @@ async function searchGoogleAccount(
   const response = await drive.files.list({
     q: `name contains '${safeQuery}' and trashed = false`,
     fields: 'files(id, name, mimeType, modifiedTime, webViewLink)',
-    pageSize: 25,
+    pageSize: PER_ACCOUNT_LIMIT,
     orderBy: 'modifiedTime desc'
   })
 

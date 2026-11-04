@@ -54,7 +54,7 @@ export async function searchFiles(accountId: string, query: string): Promise<Dri
 
   // Escape single quotes for OData query syntax
   const safeQuery = query.replace(/'/g, "''")
-  const endpoint = `https://graph.microsoft.com/v1.0/me/drive/search(q='${safeQuery}')?${SELECT}&$top=25`
+  const endpoint = `https://graph.microsoft.com/v1.0/me/drive/search(q='${safeQuery}')?${SELECT}&$top=100` // keep in step with PER_ACCOUNT_LIMIT in search/index.ts
 
   const data = await graphGet(endpoint, accessToken)
   return data.value.map(toFile)

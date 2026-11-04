@@ -6,6 +6,7 @@ import { SearchResults } from './components/SearchResults'
 import { UpdateModal } from './components/UpdateModal'
 import { AboutModal } from './components/AboutModal'
 import { NotificationBanner } from './components/NotificationBanner'
+import { DEFAULT_FILTERS, type SearchFilters } from './lib/searchFilters'
 
 interface Account {
   id: string
@@ -70,6 +71,8 @@ function App(): JSX.Element {
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<SearchResult[]>([])
   const [searchLoading, setSearchLoading] = useState(false)
+  // Filters live here, not in SearchResults, so they stay on between searches until cleared.
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>(DEFAULT_FILTERS)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const isSearching = searchQuery.trim().length > 0
@@ -80,6 +83,15 @@ function App(): JSX.Element {
       if (saved.length > 0) setActiveAccountId(saved[0].id)
     })
   }, [])
+
+  // If the account being filtered on gets disconnected, drop that filter.
+  useEffect(() => {
+    setSearchFilters((f) =>
+      f.accountId !== 'all' && !accounts.some((a) => a.id === f.accountId)
+        ? { ...f, accountId: 'all' }
+        : f
+    )
+  }, [accounts])
 
   useEffect(() => {
     const remove = window.api.onMenuCheckForUpdates(() => setShowUpdateModal(true))
@@ -306,6 +318,9 @@ function App(): JSX.Element {
               results={searchResults}
               loading={searchLoading}
               query={searchQuery}
+              accounts={accounts}
+              filters={searchFilters}
+              onFiltersChange={setSearchFilters}
               onSelectAccount={handleSearchSelectAccount}
             />
           ) : activeAccount ? (
