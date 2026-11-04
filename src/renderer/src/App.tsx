@@ -5,6 +5,7 @@ import { FileList } from './components/FileList'
 import { SearchResults } from './components/SearchResults'
 import { UpdateModal } from './components/UpdateModal'
 import { AboutModal } from './components/AboutModal'
+import { ChangelogModal } from './components/ChangelogModal'
 import { NotificationBanner } from './components/NotificationBanner'
 import { DEFAULT_FILTERS, type SearchFilters } from './lib/searchFilters'
 
@@ -44,6 +45,8 @@ declare global {
       getVersion: () => Promise<string>
       onMenuCheckForUpdates: (callback: () => void) => () => void
       onMenuShowAbout: (callback: () => void) => () => void
+      getChangelog: () => Promise<string>
+      onMenuShowChangelog: (callback: () => void) => () => void
       getNotifications: () => Promise<
         { id: string; message: string; type: 'info' | 'warning'; linkLabel?: string; linkUrl?: string }[]
       >
@@ -66,6 +69,7 @@ function App(): JSX.Element {
   const [refreshing, setRefreshing] = useState(false)
   const [showUpdateModal, setShowUpdateModal] = useState(false)
   const [showAboutModal, setShowAboutModal] = useState(false)
+  const [showChangelogModal, setShowChangelogModal] = useState(false)
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('')
@@ -100,6 +104,11 @@ function App(): JSX.Element {
 
   useEffect(() => {
     const remove = window.api.onMenuShowAbout(() => setShowAboutModal(true))
+    return remove
+  }, [])
+
+  useEffect(() => {
+    const remove = window.api.onMenuShowChangelog(() => setShowChangelogModal(true))
     return remove
   }, [])
 
@@ -222,6 +231,7 @@ function App(): JSX.Element {
     <div className="app">
       {showUpdateModal && <UpdateModal onClose={() => setShowUpdateModal(false)} />}
       {showAboutModal && <AboutModal onClose={() => setShowAboutModal(false)} />}
+      {showChangelogModal && <ChangelogModal onClose={() => setShowChangelogModal(false)} />}
       <header className="sidebar">
         <div className="sidebar-gradient-bar" />
         <div className="sidebar-inner">
