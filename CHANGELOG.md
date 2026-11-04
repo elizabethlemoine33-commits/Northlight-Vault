@@ -18,7 +18,8 @@ Format: [Keep a Changelog](https://keepachangelog.com) · Versioning: [SemVer](h
 
 ### Changed
 - **More results per search.** Vault now fetches up to 100 matches from each account (it was 20 to 25), so the filters have more to work with. If an account hits that limit, Vault says so.
-- **Dropbox search now matches file names only**, the same as Google Drive and OneDrive. Before, Dropbox could also match words inside files on its side.
+- **Dropbox search now matches file names only**, the same as Google Drive. Before, Dropbox could also match words inside files on its side.
+- **OneDrive search still uses Microsoft's own search**, which can match words inside your files as well as their names. Microsoft offers no name-only option. Vault does not read your files: Microsoft does the matching on its side and sends Vault the list of results.
 
 ### Fixed
 - Spreadsheet and presentation files from Microsoft Office showed a document icon in search results. They now show the right icon.
