@@ -12,6 +12,7 @@ Sentry.init({
 
 import { app, BrowserWindow, shell, ipcMain, Menu } from 'electron'
 import { join } from 'path'
+import { readFileSync } from 'fs'
 import { signInWithGoogle, signOutGoogle } from './auth/google'
 import { signInWithMicrosoft, signOutMicrosoft } from './auth/microsoft'
 import { signInWithDropbox, signOutDropbox } from './auth/dropbox'
@@ -129,6 +130,9 @@ ipcMain.handle('app:checkForUpdates', async () => {
 
 ipcMain.handle('app:getVersion', () => app.getVersion())
 
+// CHANGELOG.md is the one place the release history is written; the renderer turns it into the "What's new" window.
+ipcMain.handle('app:getChangelog', () => readFileSync(getChangelogPath(), 'utf-8'))
+
 
 ipcMain.handle('notifications:get', () => getActiveNotifications())
 
@@ -143,18 +147,23 @@ ipcMain.handle('file:open', async (_event, url: string) => {
   }
 })
 
-function buildAppMenu(): void {
-  const changelogPath = app.isPackaged
+function getChangelogPath(): string {
+  return app.isPackaged
     ? join(process.resourcesPath, 'CHANGELOG.md')
     : join(process.cwd(), 'CHANGELOG.md')
+}
 
+function buildAppMenu(): void {
   const template: Electron.MenuItemConstructorOptions[] = [
     {
       label: 'Help',
       submenu: [
         {
-          label: 'View Changelog',
-          click: () => shell.openPath(changelogPath)
+          label: "What's New (Changelog)…",
+          click: () => {
+            const win = BrowserWindow.getAllWindows()[0]
+            if (win) win.webContents.send('menu:show-changelog')
+          }
         },
         {
           label: 'Check for Updates…',

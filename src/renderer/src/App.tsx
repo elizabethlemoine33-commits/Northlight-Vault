@@ -5,7 +5,9 @@ import { FileList } from './components/FileList'
 import { SearchResults } from './components/SearchResults'
 import { UpdateModal } from './components/UpdateModal'
 import { AboutModal } from './components/AboutModal'
+import { ChangelogModal } from './components/ChangelogModal'
 import { NotificationBanner } from './components/NotificationBanner'
+import { DEFAULT_FILTERS, type SearchFilters } from './lib/searchFilters'
 
 interface Account {
   id: string
@@ -43,6 +45,8 @@ declare global {
       getVersion: () => Promise<string>
       onMenuCheckForUpdates: (callback: () => void) => () => void
       onMenuShowAbout: (callback: () => void) => () => void
+      getChangelog: () => Promise<string>
+      onMenuShowChangelog: (callback: () => void) => () => void
       getNotifications: () => Promise<
         { id: string; message: string; type: 'info' | 'warning'; linkLabel?: string; linkUrl?: string }[]
       >
@@ -65,11 +69,14 @@ function App(): JSX.Element {
   const [refreshing, setRefreshing] = useState(false)
   const [showUpdateModal, setShowUpdateModal] = useState(false)
   const [showAboutModal, setShowAboutModal] = useState(false)
+  const [showChangelogModal, setShowChangelogModal] = useState(false)
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<SearchResult[]>([])
   const [searchLoading, setSearchLoading] = useState(false)
+  // Filters live here, not in SearchResults, so they stay on between searches until cleared.
+  const [searchFilters, setSearchFilters] = useState<SearchFilters>(DEFAULT_FILTERS)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const isSearching = searchQuery.trim().length > 0
@@ -81,6 +88,15 @@ function App(): JSX.Element {
     })
   }, [])
 
+  // If the account being filtered on gets disconnected, drop that filter.
+  useEffect(() => {
+    setSearchFilters((f) =>
+      f.accountId !== 'all' && !accounts.some((a) => a.id === f.accountId)
+        ? { ...f, accountId: 'all' }
+        : f
+    )
+  }, [accounts])
+
   useEffect(() => {
     const remove = window.api.onMenuCheckForUpdates(() => setShowUpdateModal(true))
     return remove
@@ -88,6 +104,11 @@ function App(): JSX.Element {
 
   useEffect(() => {
     const remove = window.api.onMenuShowAbout(() => setShowAboutModal(true))
+    return remove
+  }, [])
+
+  useEffect(() => {
+    const remove = window.api.onMenuShowChangelog(() => setShowChangelogModal(true))
     return remove
   }, [])
 
@@ -210,6 +231,7 @@ function App(): JSX.Element {
     <div className="app">
       {showUpdateModal && <UpdateModal onClose={() => setShowUpdateModal(false)} />}
       {showAboutModal && <AboutModal onClose={() => setShowAboutModal(false)} />}
+      {showChangelogModal && <ChangelogModal onClose={() => setShowChangelogModal(false)} />}
       <header className="sidebar">
         <div className="sidebar-gradient-bar" />
         <div className="sidebar-inner">
@@ -306,6 +328,9 @@ function App(): JSX.Element {
               results={searchResults}
               loading={searchLoading}
               query={searchQuery}
+              accounts={accounts}
+              filters={searchFilters}
+              onFiltersChange={setSearchFilters}
               onSelectAccount={handleSearchSelectAccount}
             />
           ) : activeAccount ? (

@@ -47,6 +47,15 @@ contextBridge.exposeInMainWorld('api', {
     return () => ipcRenderer.removeListener('menu:check-for-updates', callback)
   },
 
+  // Returns the text of CHANGELOG.md for the "What's new" window
+  getChangelog: () => ipcRenderer.invoke('app:getChangelog'),
+
+  // Listen for the Help menu "What's New" click (triggered by native menu)
+  onMenuShowChangelog: (callback: () => void) => {
+    ipcRenderer.on('menu:show-changelog', callback)
+    return () => ipcRenderer.removeListener('menu:show-changelog', callback)
+  },
+
   // Listen for the Help menu "About Northlight Vault…" click (triggered by native menu)
   onMenuShowAbout: (callback: () => void) => {
     ipcRenderer.on('menu:show-about', callback)

@@ -11,6 +11,23 @@ Format: [Keep a Changelog](https://keepachangelog.com) · Versioning: [SemVer](h
 
 ---
 
+## [1.0.4] — 2026-11-04
+
+### Added
+- **Filter your search results.** Above the results there are now three filters: **Type** (documents, spreadsheets, presentations, PDFs, images, videos, audio, folders), **Modified** (past 24 hours, 7 days, 30 days or year) and **Account**. They work together with your search words and across Google Drive, OneDrive and Dropbox. Filters stay on between searches until you choose **Clear filters**. This uses only the file names, types and dates Vault already reads, so there are no new permissions.
+- **A readable "What's new" window.** **Help → What's New (Changelog)** now opens a window inside Vault with each version, its date and labelled lists of what was added, changed and fixed. Before, it opened a plain text file.
+
+### Changed
+- **More results per search.** Vault now fetches up to 100 matches from each account (it was 20 to 25), so the filters have more to work with. If an account hits that limit, Vault says so.
+- **Dropbox search now matches file names only**, the same as Google Drive. Before, Dropbox could also match words inside files on its side.
+- **OneDrive search still uses Microsoft's own search**, which can match words inside your files as well as their names. Microsoft offers no name-only option. Vault does not read your files: Microsoft does the matching on its side and sends Vault the list of results.
+
+### Fixed
+- Spreadsheet and presentation files from Microsoft Office showed a document icon in search results. They now show the right icon.
+- The empty search screen said "Google Drive accounts". It now says "connected accounts".
+
+---
+
 ## [1.0.3] — 2026-11-03
 
 ### Privacy

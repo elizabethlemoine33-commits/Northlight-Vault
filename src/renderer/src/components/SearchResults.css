@@ -23,6 +23,94 @@
   flex-shrink: 0;
 }
 
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 16px;
+  padding: 10px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: 'Jost', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.filter-field select {
+  min-width: 140px;
+  max-width: 240px;
+  padding: 6px 28px 6px 10px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  letter-spacing: normal;
+  text-transform: none;
+  color: var(--birch);
+  background: var(--surface-2, var(--surface));
+  border: 1px solid var(--border-2, var(--border));
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.filter-field select:hover { border-color: var(--dusk); }
+
+.filter-field select:focus-visible,
+.filter-clear:focus-visible,
+.filter-link:focus-visible {
+  outline: 2px solid var(--glacial, var(--dusk));
+  outline-offset: 2px;
+}
+
+.filter-clear {
+  padding: 6px 12px;
+  font-family: 'Jost', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--dusk);
+  background: transparent;
+  border: 1px solid var(--dusk);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.filter-clear:hover:not(:disabled) {
+  background: var(--dusk);
+  color: #fff;
+}
+
+.filter-clear:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.filter-active {
+  align-self: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  color: var(--haze, var(--muted));
+}
+
+.filter-link {
+  padding: 0;
+  font: inherit;
+  color: var(--glacial, var(--dusk));
+  background: none;
+  border: none;
+  border-bottom: 1px solid currentColor;
+  cursor: pointer;
+}
+
 .results-table {
   width: 100%;
   border-collapse: collapse;

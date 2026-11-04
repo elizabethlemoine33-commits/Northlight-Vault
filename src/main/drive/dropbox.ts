@@ -104,9 +104,9 @@ export async function searchFiles(
   const data = await dropboxPost(accessToken, 'files/search_v2', {
     query,
     options: {
-      max_results: 20,
+      max_results: 100, // keep in step with PER_ACCOUNT_LIMIT in search/index.ts
       file_status: 'active',
-      filename_only: false
+      filename_only: true // match on file names only, like Google Drive and OneDrive
     }
   }) as Record<string, unknown>
 
