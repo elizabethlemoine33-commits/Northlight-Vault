@@ -15,9 +15,9 @@
   --surface-2: #10101c;
   --border: #1e2035;
   --border-2: #2a2a48;
-  --muted: #5a6080;
+  --muted: #99a1b6;
   --dim: #3a3d52;
-  --text-secondary: #8a92a8;
+  --text-secondary: #bcc2dc;
   --gradient-bar: linear-gradient(90deg, #4fc3c8 0%, #5b8dd9 30%, #8b6fd4 65%, #c46faa 100%);
   --gradient-text: linear-gradient(105deg, #4fc3c8 0%, #5b8dd9 33%, #8b6fd4 66%, #c46faa 100%);
 }
