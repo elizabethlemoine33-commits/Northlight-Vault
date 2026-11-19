@@ -11,6 +11,14 @@ Format: [Keep a Changelog](https://keepachangelog.com) · Versioning: [SemVer](h
 
 ---
 
+## [1.0.5] — 2026-11-19
+
+### Fixed
+- **Easier-to-read text.** Several lighter-grey labels were hard to read against the dark background: the Disconnect button, hint text, the version, "built by" and copyright lines in the About window, and the labels in the update window. They are now clearer, and the secondary text in lists and headings is brighter too. Nothing else changed.
+
+
+---
+
 ## [1.0.4] — 2026-11-04
 
 ### Added
