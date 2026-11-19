@@ -32,7 +32,7 @@
 .about-version {
   font-family: 'Outfit', sans-serif;
   font-size: 12px;
-  color: var(--dim);
+  color: var(--muted);
   margin-top: 4px;
 }
 
@@ -47,7 +47,7 @@
 .about-built-by {
   font-family: 'Outfit', sans-serif;
   font-size: 13px;
-  color: var(--dim);
+  color: var(--muted);
   margin: 0;
 }
 
@@ -71,7 +71,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--dim);
+  color: var(--muted);
   width: 100px;
   flex-shrink: 0;
 }
@@ -95,7 +95,7 @@
 .about-copyright {
   font-family: 'Outfit', sans-serif;
   font-size: 11px;
-  color: var(--dim);
+  color: var(--muted);
   border-top: 1px solid var(--border);
   padding-top: 14px;
 }

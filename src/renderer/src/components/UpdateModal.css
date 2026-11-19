@@ -85,7 +85,7 @@
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--dim);
+  color: var(--muted);
   width: 60px;
   flex-shrink: 0;
 }
@@ -115,7 +115,7 @@
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--dim);
+  color: var(--muted);
   margin-bottom: 6px;
 }
 
