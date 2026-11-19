@@ -123,9 +123,9 @@ Each decision in the format: **What / Why / What we ruled out / Date**.
 --border-2:   #2A2A48   /* more visible borders */
 --text:       #FFFFFF   /* primary text */
 --cloud:      #C8CCE0   /* body text */
---haze:       #B0B8D8   /* secondary text */
---muted:      #8A92A8   /* placeholder, disabled */
---structural: #5A6080   /* UI chrome, labels */
+--haze:       #BCC2DC   /* secondary text (brightened from #B0B8D8, Nov 2026) */
+--muted:      #99A1B6   /* labels, placeholder: the absolute text floor (brightened from #8A92A8, Nov 2026) */
+--structural: #6C7295   /* borders and dividers ONLY, never text (brightened from #5A6080, Nov 2026) */
 --glacial:    #4FC3C8   /* cyan accent */
 --boreal:     #5B8DD9   /* blue accent */
 --dusk:       #8B6FD4   /* purple accent */
