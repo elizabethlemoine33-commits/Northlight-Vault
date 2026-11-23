@@ -21,7 +21,7 @@ import { listFiles as listGoogleFiles } from './drive/google'
 import { listFiles as listOneDriveFiles } from './drive/onedrive'
 import { listFiles as listDropboxFiles } from './drive/dropbox'
 import { searchAllAccounts } from './search'
-import { isSafeExternalUrl } from './utils/safeUrl'
+import { isSafeExternalUrl, refusedLinkLabel } from './utils/safeUrl'
 import { checkForUpdates } from './utils/updateChecker'
 import {
   getActiveNotifications,
@@ -62,6 +62,9 @@ function createWindow(): void {
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     if (isSafeExternalUrl(url)) {
       shell.openExternal(url).catch((err) => console.error('[open] could not open link:', err.message))
+    } else {
+      // The user sees nothing; the log keeps the scheme only (never the address) for debugging.
+      console.warn(`[open] refused a link (${refusedLinkLabel(url)})`)
     }
     return { action: 'deny' }
   })
@@ -148,6 +151,8 @@ ipcMain.handle('file:open', async (_event, url: string) => {
   // Only open https: URLs or mailto: links — never file paths or other protocols
   if (isSafeExternalUrl(url)) {
     await shell.openExternal(url)
+  } else {
+    console.warn(`[open] refused a link (${refusedLinkLabel(url)})`)
   }
 })
 

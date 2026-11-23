@@ -19,3 +19,18 @@ export function isSafeExternalUrl(url: unknown): url is string {
   }
   return ALLOWED_PROTOCOLS.has(parsed.protocol)
 }
+
+// A short, safe label for a link that was refused, for a log line. It carries the scheme ONLY
+// ("file", "javascript", "ms-msdt" ...) and never any other part of the address: no file names,
+// no hosts, no query text. Anything that is not a plain scheme name becomes a fixed word.
+export function refusedLinkLabel(url: unknown): string {
+  if (typeof url !== 'string') return 'not-text'
+  let protocol: string
+  try {
+    protocol = new URL(url.trim()).protocol
+  } catch {
+    return 'not-a-url' // relative paths, empty text, "C:\..." style paths and so on
+  }
+  const scheme = protocol.slice(0, -1).toLowerCase()
+  return /^[a-z][a-z0-9+.-]{0,19}$/.test(scheme) ? scheme : 'odd-scheme'
+}
