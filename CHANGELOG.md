@@ -8,6 +8,9 @@ Format: [Keep a Changelog](https://keepachangelog.com) · Versioning: [SemVer](h
 ## [Unreleased]
 <!-- Work in progress — moved to a versioned section when shipped -->
 
+### Security
+- **Links are checked before they open.** Vault now only opens web links (https) and email links from inside the app. Anything else, such as a link that points at a file or starts another program, is ignored. Links you click normally work as before.
+
 
 ---
 
