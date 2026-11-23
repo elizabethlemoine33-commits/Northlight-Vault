@@ -21,6 +21,7 @@ import { listFiles as listGoogleFiles } from './drive/google'
 import { listFiles as listOneDriveFiles } from './drive/onedrive'
 import { listFiles as listDropboxFiles } from './drive/dropbox'
 import { searchAllAccounts } from './search'
+import { isSafeExternalUrl } from './utils/safeUrl'
 import { checkForUpdates } from './utils/updateChecker'
 import {
   getActiveNotifications,
@@ -57,8 +58,11 @@ function createWindow(): void {
   })
 
   // Open external links in the system browser, not inside the app
+  // Only https: and mailto: links are handed to the system; anything else is silently refused.
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    shell.openExternal(url)
+    if (isSafeExternalUrl(url)) {
+      shell.openExternal(url).catch((err) => console.error('[open] could not open link:', err.message))
+    }
     return { action: 'deny' }
   })
 
@@ -141,8 +145,8 @@ ipcMain.handle('notifications:getUpdate', () => getUpdateNotification())
 ipcMain.handle('notifications:dismiss', (_event, id: string) => dismissNotification(id))
 
 ipcMain.handle('file:open', async (_event, url: string) => {
-  // Only open https:// URLs or mailto: links — never file paths or other protocols
-  if (typeof url === 'string' && (url.startsWith('https://') || url.startsWith('mailto:'))) {
+  // Only open https: URLs or mailto: links — never file paths or other protocols
+  if (isSafeExternalUrl(url)) {
     await shell.openExternal(url)
   }
 })
