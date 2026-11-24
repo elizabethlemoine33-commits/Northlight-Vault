@@ -1,7 +1,7 @@
 // Run: npm test   (uses Node's built-in test runner; no extra packages)
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { isSafeExternalUrl, refusedLinkLabel } from './safeUrl.ts'
+import { isSafeExternalUrl, refusedLinkLabel, isAppNavigation } from './safeUrl.ts'
 
 test('web pages and email links are allowed', () => {
   for (const url of [
@@ -73,5 +73,30 @@ test('the label never contains anything from the address beyond a short scheme n
     assert.ok(label.length <= 20, label)
     assert.ok(!label.toLowerCase().includes(secret.toLowerCase()), label)
     assert.ok(!label.includes('/') && !label.includes('.docx') && !label.includes('example'), label)
+  }
+})
+
+test('only the app\'s own page counts as app navigation', () => {
+  const packaged = 'file:///C:/Users/me/AppData/Local/Programs/Northlight%20Vault/resources/app.asar/out/renderer/index.html'
+  assert.equal(isAppNavigation(packaged, packaged), true)
+  assert.equal(isAppNavigation(`${packaged}#/settings`, packaged), true)
+  assert.equal(isAppNavigation(`${packaged}?x=1`, packaged), true)
+  assert.equal(isAppNavigation('file:///C:/Windows/System32/calc.exe', packaged), false)
+  assert.equal(isAppNavigation('file:///C:/Users/me/AppData/Local/Programs/Northlight%20Vault/resources/app.asar/out/renderer/other.html', packaged), false)
+  assert.equal(isAppNavigation('https://example.com/', packaged), false)
+  assert.equal(isAppNavigation('javascript:alert(1)', packaged), false)
+  const dev = 'http://localhost:5173/'
+  assert.equal(isAppNavigation('http://localhost:5173/', dev), true)
+  assert.equal(isAppNavigation('http://localhost:5173/#/x', dev), true)
+  assert.equal(isAppNavigation('http://localhost:5174/', dev), false)
+  assert.equal(isAppNavigation('http://evil.example/', dev), false)
+  assert.equal(isAppNavigation('https://localhost:5173/', dev), false)
+})
+
+test('app navigation check refuses anything it cannot read', () => {
+  const app = 'http://localhost:5173/'
+  for (const bad of [undefined, null, 5, '', 'not a url', {}]) {
+    assert.equal(isAppNavigation(bad, app), false)
+    assert.equal(isAppNavigation(app, bad), false)
   }
 })

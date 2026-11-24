@@ -34,3 +34,23 @@ export function refusedLinkLabel(url: unknown): string {
   const scheme = protocol.slice(0, -1).toLowerCase()
   return /^[a-z][a-z0-9+.-]{0,19}$/.test(scheme) ? scheme : 'odd-scheme'
 }
+
+// True only when `target` is the app's own page (the same document, ignoring any "#..." or "?..." part).
+// Used to stop the app window from ever navigating away to another page: a plain link, a redirect or a
+// form post inside the window would otherwise load outside content into a window that has the app's bridge.
+// appUrl is the address the window was first loaded with: the built index.html in the packaged app, or the
+// dev server in development. Different protocol, host, port or file path means "not the app".
+export function isAppNavigation(target: unknown, appUrl: unknown): boolean {
+  if (typeof target !== 'string' || typeof appUrl !== 'string') return false
+  let a: URL
+  let b: URL
+  try {
+    a = new URL(target)
+    b = new URL(appUrl)
+  } catch {
+    return false
+  }
+  if (a.protocol !== b.protocol) return false
+  if (a.protocol === 'file:') return a.host === b.host && a.pathname === b.pathname
+  return a.origin === b.origin && a.pathname === b.pathname
+}

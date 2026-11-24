@@ -12,6 +12,7 @@ Sentry.init({
 
 import { app, BrowserWindow, shell, ipcMain, Menu } from 'electron'
 import { join } from 'path'
+import { pathToFileURL } from 'url'
 import { readFileSync } from 'fs'
 import { signInWithGoogle, signOutGoogle } from './auth/google'
 import { signInWithMicrosoft, signOutMicrosoft } from './auth/microsoft'
@@ -21,7 +22,7 @@ import { listFiles as listGoogleFiles } from './drive/google'
 import { listFiles as listOneDriveFiles } from './drive/onedrive'
 import { listFiles as listDropboxFiles } from './drive/dropbox'
 import { searchAllAccounts } from './search'
-import { isSafeExternalUrl, refusedLinkLabel } from './utils/safeUrl'
+import { isSafeExternalUrl, refusedLinkLabel, isAppNavigation } from './utils/safeUrl'
 import { checkForUpdates } from './utils/updateChecker'
 import {
   getActiveNotifications,
@@ -67,6 +68,23 @@ function createWindow(): void {
       console.warn(`[open] refused a link (${refusedLinkLabel(url)})`)
     }
     return { action: 'deny' }
+  })
+
+  // The window must never navigate away from the app's own page. A plain link, a redirect or a form
+  // post inside it would otherwise load outside content into a window that has the app's bridge.
+  // Same-page changes (reload, "#" links) are allowed; a web link is handed to the system browser
+  // (https: and mailto: only, same rule as above); everything else is refused and logged by scheme only.
+  const appUrl = process.env['ELECTRON_RENDERER_URL']
+    ? process.env['ELECTRON_RENDERER_URL']
+    : pathToFileURL(join(__dirname, '../renderer/index.html')).toString()
+  mainWindow.webContents.on('will-navigate', (event, url) => {
+    if (isAppNavigation(url, appUrl)) return
+    event.preventDefault()
+    if (isSafeExternalUrl(url)) {
+      shell.openExternal(url).catch((err) => console.error('[open] could not open link:', err.message))
+    } else {
+      console.warn(`[open] refused a navigation (${refusedLinkLabel(url)})`)
+    }
   })
 
   // Load the renderer (React app)

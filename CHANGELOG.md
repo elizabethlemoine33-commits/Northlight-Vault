@@ -10,6 +10,7 @@ Format: [Keep a Changelog](https://keepachangelog.com) · Versioning: [SemVer](h
 
 ### Security
 - **Links are checked before they open.** Vault now only opens web links (https) and email links from inside the app. Anything else, such as a link that points at a file or starts another program, is ignored. Links you click normally work as before.
+- **The app window can't be sent to another page.** If something inside the window ever tried to load another page into it, Vault now stops that and opens normal web links in your browser instead. Reloading and normal use work as before.
 
 
 ---
