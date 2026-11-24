@@ -11,6 +11,14 @@ Format: [Keep a Changelog](https://keepachangelog.com) · Versioning: [SemVer](h
 
 ---
 
+## [1.0.7] — 2026-11-24
+
+### Added
+- **Reload.** A new View menu has a Reload command (Ctrl+R) that redraws the window. Your accounts stay as they are.
+
+
+---
+
 ## [1.0.6] — 2026-11-24
 
 ### Security

@@ -183,6 +183,11 @@ function getChangelogPath(): string {
 function buildAppMenu(): void {
   const template: Electron.MenuItemConstructorOptions[] = [
     {
+      // Reload (Ctrl+R) re-draws the window from scratch; the same-page rule above lets it through.
+      label: 'View',
+      submenu: [{ role: 'reload' }]
+    },
+    {
       label: 'Help',
       submenu: [
         {
